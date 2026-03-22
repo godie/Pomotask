@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #ff2d78;
+  --color-secondary: #00ffcc;
+  --color-tertiary: #ffe04a;
+  --color-background: #0a0a12;
+  --color-surface: #0f0f1a;
+  --color-surface-container: #141422;
+  --color-on-background: #e8e0f0;
+  --color-on-surface: #e8e0f0;
+
+  --font-headline: "Sora", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Space Grotesk", monospace;
+}
+
+:root {
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-headline);
+  font-weight: 700;
+}
+
+.label {
+  font-family: var(--font-label);
+}
+
+.neon-glow {
+  text-shadow: 0 0 8px currentColor;
+}
+
+.button-glow:hover {
+  box-shadow: 0 0 16px rgba(255, 45, 120, 0.4);
+}
+
+.border-glow {
+  border: 1px solid rgba(255, 45, 120, 0.3);
+  box-shadow: inset 0 0 12px rgba(255, 45, 120, 0.1);
+}
