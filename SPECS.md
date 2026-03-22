@@ -1,4 +1,4 @@
-# ⚙️ Technical Specs — PomodoroFlow
+# ⚙️ Technical Specs — Pomotask
 
 > Detailed technical specification for agents and developers.
 > Follow these conventions strictly for consistency across the codebase.
@@ -7,35 +7,41 @@
 
 ## 🧱 Stack
 
-| Concern | Library/Tool | Version |
-|---|---|---|
-| UI Framework | React | 18 |
-| Build Tool | Vite | 5 |
-| Package Manager | pnpm | 9 |
-| Routing | TanStack Router | latest |
-| Server/Async State | TanStack Query | v5 |
-| Forms | TanStack Form | latest |
-| Tables | TanStack Table | v8 |
-| Local DB | Dexie.js (IndexedDB) | v4 |
-| Global UI State | Zustand | v4 |
-| Auth + Remote DB | Supabase | v2 (optional) |
-| Styling | Tailwind CSS | v4 |
-| Components | shadcn/ui | latest |
-| Icons | Lucide React | latest |
-| Language | TypeScript | strict mode |
+| Concern            | Library/Tool             | Version                                                                       |
+| ------------------ | ------------------------ | ----------------------------------------------------------------------------- |
+| UI Framework       | React                    | 18                                                                            |
+| Build Tool         | Vite                     | 5                                                                             |
+| Package Manager    | pnpm                     | 9                                                                             |
+| Routing            | TanStack Router          | latest                                                                        |
+| Server/Async State | TanStack Query           | v5                                                                            |
+| Forms              | TanStack Form            | latest                                                                        |
+| Tables             | TanStack Table           | v8                                                                            |
+| Local DB           | Dexie.js (IndexedDB)     | v4                                                                            |
+| Global UI State    | Zustand                  | v4                                                                            |
+| Auth + Remote DB   | Supabase                 | v2 (optional)                                                                 |
+| Styling            | Tailwind CSS             | v4 (`@tailwindcss/vite`; no separate `tailwind.config.ts` unless you add one) |
+| Components         | shadcn/ui                | latest                                                                        |
+| Icons              | Lucide React             | latest                                                                        |
+| Unit tests         | Vitest + Testing Library | 3                                                                             |
+| Language           | TypeScript               | strict mode                                                                   |
 
 ---
 
 ## 📂 File & Folder Structure
 
+**Target layout** (full UI/routing arrives per [ROADMAP.md](./ROADMAP.md)). **In the repo today:** `src/db/*`, `src/lib/*`, `src/stores/timerStore.ts`, `src/types/`, `src/tests/`, `App.tsx`, `main.tsx`; no `routes/`, `components/`, or `hooks/` yet.
+
+Repository: [github.com/godie/Pomotask](https://github.com/godie/Pomotask/). **npm package name:** `pomo-task` (folder after `git clone` is often `Pomotask`).
+
 ```
-pomodoro-flow/
+Pomotask/   # or your clone folder name
 ├── public/
 │   ├── manifest.json         # PWA manifest
-│   └── sw.js                 # Service worker (Workbox or manual)
+│   ├── icons/                # PWA icons (see manifest)
+│   └── sw.js                 # Service worker — planned (Phase 9); not in repo yet
 ├── src/
 │   ├── main.tsx              # App entry point
-│   ├── App.tsx               # Router provider setup
+│   ├── App.tsx               # Root shell (RouterProvider when routing lands)
 │   ├── routes/
 │   │   ├── __root.tsx        # Root layout (nav, timer bar)
 │   │   ├── index.tsx         # / → Timer + active task
@@ -68,7 +74,9 @@ pomodoro-flow/
 │   │   ├── schema.ts         # Dexie DB class + schema
 │   │   ├── tasks.ts          # Task DB operations
 │   │   ├── projects.ts       # Project DB operations
-│   │   └── sync.ts           # Supabase sync (optional, conditional)
+│   │   ├── sessions.ts       # PomodoroSession records
+│   │   └── sync.ts           # Supabase sync (optional, conditional — not yet)
+│   ├── tests/                # Vitest: setup.ts + *.test.ts
 │   ├── stores/
 │   │   └── timerStore.ts     # Zustand: active timer + active task
 │   ├── lib/
@@ -78,10 +86,13 @@ pomodoro-flow/
 │   └── types/
 │       └── index.ts          # All shared TypeScript types
 ├── .env.example
-├── vite.config.ts
-├── tailwind.config.ts
+├── .github/
+│   └── workflows/
+│       └── ci.yml            # lint, typecheck, test, build, Cloudflare deploy
+├── vite.config.ts            # Vite build / dev
+├── vitest.config.ts          # Vitest (extends Vite config via mergeConfig)
 ├── tsconfig.json
-└── package.json
+└── package.json              # name: pomo-task
 ```
 
 ---
@@ -91,61 +102,61 @@ pomodoro-flow/
 ### TypeScript Types (`src/types/index.ts`)
 
 ```typescript
-export type TaskStatus = 'pending' | 'in_progress' | 'completed'
+export type TaskStatus = "pending" | "in_progress" | "completed";
 
 export interface Project {
-  id: string                  // uuid
-  name: string
-  color: string               // hex color e.g. "#ef4444"
-  description?: string
-  createdAt: number           // timestamp ms
-  updatedAt: number
+  id: string; // uuid
+  name: string;
+  color: string; // hex color e.g. "#ef4444"
+  description?: string;
+  createdAt: number; // timestamp ms
+  updatedAt: number;
 }
 
 export interface Task {
-  id: string                  // uuid
-  projectId: string | null    // nullable: task can be unassigned
-  name: string
-  estimatedPomodoros: number  // 1–10
-  realPomodoros: number       // auto-incremented, starts at 0
-  status: TaskStatus
-  createdAt: number
-  updatedAt: number
-  completedAt?: number
+  id: string; // uuid
+  projectId: string | null; // nullable: task can be unassigned
+  name: string;
+  estimatedPomodoros: number; // 1–10
+  realPomodoros: number; // auto-incremented, starts at 0
+  status: TaskStatus;
+  createdAt: number;
+  updatedAt: number;
+  completedAt?: number;
 }
 
 export interface PomodoroSession {
-  id: string
-  taskId: string
-  startedAt: number
-  completedAt: number         // only set if fully completed
-  type: 'focus' | 'short_break' | 'long_break'
-  durationSeconds: number
+  id: string;
+  taskId: string;
+  startedAt: number;
+  completedAt: number; // only set if fully completed
+  type: "focus" | "short_break" | "long_break";
+  durationSeconds: number;
 }
 ```
 
 ### Dexie Schema (`src/db/schema.ts`)
 
 ```typescript
-import Dexie, { Table } from 'dexie'
-import type { Project, Task, PomodoroSession } from '@/types'
+import Dexie, { type Table } from "dexie";
+import type { Project, Task, PomodoroSession } from "@/types";
 
-class PomodoroFlowDB extends Dexie {
-  projects!: Table<Project>
-  tasks!: Table<Task>
-  sessions!: Table<PomodoroSession>
+export class PomotaskDB extends Dexie {
+  projects!: Table<Project>;
+  tasks!: Table<Task>;
+  sessions!: Table<PomodoroSession>;
 
   constructor() {
-    super('PomodoroFlowDB')
+    super("PomotaskDB");
     this.version(1).stores({
-      projects: 'id, createdAt',
-      tasks: 'id, projectId, status, createdAt',
-      sessions: 'id, taskId, startedAt, type',
-    })
+      projects: "id, createdAt",
+      tasks: "id, projectId, status, createdAt",
+      sessions: "id, taskId, startedAt, type",
+    });
   }
 }
 
-export const db = new PomodoroFlowDB()
+export const db = new PomotaskDB();
 ```
 
 ---
@@ -163,36 +174,38 @@ IDLE → FOCUS_RUNNING → FOCUS_PAUSED → FOCUS_RUNNING (resume)
 ```
 
 ```typescript
-export type TimerMode = 'focus' | 'short_break' | 'long_break'
-export type TimerStatus = 'idle' | 'running' | 'paused' | 'break'
+export type TimerMode = "focus" | "short_break" | "long_break";
+export type TimerStatus = "idle" | "running" | "paused" | "break";
 
 interface TimerStore {
-  status: TimerStatus
-  mode: TimerMode
-  secondsLeft: number
-  pomodorosCompleted: number   // in current session (resets on long break)
-  totalPomodorosToday: number
-  activeTaskId: string | null
+  status: TimerStatus;
+  mode: TimerMode;
+  secondsLeft: number;
+  pomodorosCompleted: number; // in current session (resets on long break)
+  totalPomodorosToday: number;
+  activeTaskId: string | null;
 
-  start: () => void
-  pause: () => void
-  resume: () => void
-  skip: () => void
-  reset: () => void
-  setActiveTask: (taskId: string | null) => void
-  tick: () => void             // called every second by setInterval
+  start: () => void;
+  pause: () => void;
+  resume: () => void;
+  skip: () => void;
+  reset: () => void;
+  setActiveTask: (taskId: string | null) => void;
+  tick: () => void; // called every second by setInterval
 }
 ```
 
 **Timer constants:**
+
 ```typescript
-export const FOCUS_DURATION = 25 * 60       // 1500 seconds
-export const SHORT_BREAK = 5 * 60           // 300 seconds
-export const LONG_BREAK = 15 * 60           // 900 seconds
-export const POMODOROS_UNTIL_LONG_BREAK = 4
+export const FOCUS_DURATION = 25 * 60; // 1500 seconds
+export const SHORT_BREAK = 5 * 60; // 300 seconds
+export const LONG_BREAK = 15 * 60; // 900 seconds
+export const POMODOROS_UNTIL_LONG_BREAK = 4;
 ```
 
 **On focus session complete:**
+
 1. Increment `realPomodoros` on active task in IndexedDB
 2. Increment `pomodorosCompleted` in store
 3. Create a `PomodoroSession` record in DB
@@ -204,20 +217,40 @@ export const POMODOROS_UNTIL_LONG_BREAK = 4
 
 ```typescript
 export function shouldSplitTask(estimatedPomodoros: number): boolean {
-  return estimatedPomodoros > 5
+  return estimatedPomodoros > 5;
 }
 
-export function splitTask(task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): [Task, Task] {
-  const half = Math.ceil(task.estimatedPomodoros / 2)
-  const remainder = task.estimatedPomodoros - half
+export function splitTask(
+  task: Omit<Task, "id" | "createdAt" | "updatedAt">,
+): [Task, Task] {
+  const half = Math.ceil(task.estimatedPomodoros / 2);
+  const remainder = task.estimatedPomodoros - half;
 
-  const base = { projectId: task.projectId, status: 'pending' as TaskStatus, realPomodoros: 0 }
-  const now = Date.now()
+  const base = {
+    projectId: task.projectId,
+    status: "pending" as TaskStatus,
+    realPomodoros: 0,
+  };
+  const now = Date.now();
 
   return [
-    { ...base, id: crypto.randomUUID(), name: `${task.name} (Part 1)`, estimatedPomodoros: half, createdAt: now, updatedAt: now },
-    { ...base, id: crypto.randomUUID(), name: `${task.name} (Part 2)`, estimatedPomodoros: remainder, createdAt: now, updatedAt: now },
-  ]
+    {
+      ...base,
+      id: crypto.randomUUID(),
+      name: `${task.name} (Part 1)`,
+      estimatedPomodoros: half,
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      ...base,
+      id: crypto.randomUUID(),
+      name: `${task.name} (Part 2)`,
+      estimatedPomodoros: remainder,
+      createdAt: now,
+      updatedAt: now,
+    },
+  ];
 }
 ```
 
@@ -228,20 +261,20 @@ export function splitTask(task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): [
 ```typescript
 export const queryKeys = {
   projects: {
-    all: ['projects'] as const,
-    detail: (id: string) => ['projects', id] as const,
-    tasks: (id: string) => ['projects', id, 'tasks'] as const,
+    all: ["projects"] as const,
+    detail: (id: string) => ["projects", id] as const,
+    tasks: (id: string) => ["projects", id, "tasks"] as const,
   },
   tasks: {
-    all: ['tasks'] as const,
-    byProject: (projectId: string) => ['tasks', { projectId }] as const,
-    detail: (id: string) => ['tasks', id] as const,
+    all: ["tasks"] as const,
+    byProject: (projectId: string) => ["tasks", { projectId }] as const,
+    detail: (id: string) => ["tasks", id] as const,
   },
   sessions: {
-    byTask: (taskId: string) => ['sessions', { taskId }] as const,
-    today: ['sessions', 'today'] as const,
+    byTask: (taskId: string) => ["sessions", { taskId }] as const,
+    today: ["sessions", "today"] as const,
   },
-}
+};
 ```
 
 ---
@@ -266,23 +299,26 @@ RLS policies: users can only read/write their own rows (`user_id = auth.uid()`).
 
 ## 📱 PWA Configuration
 
-**`public/manifest.json`** minimum required fields:
+**`public/manifest.json`** — source of truth is the file in the repo. Current icons live under **`/icons/`** (e.g. `/icons/icon-192.png`). Theme/background colors match the Stitch palette (see file).
+
+Minimum shape (fields may match current values):
+
 ```json
 {
-  "name": "PomodoroFlow",
+  "name": "Pomotask",
   "short_name": "Pomodoro",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ef4444",
+  "background_color": "#0a0a12",
+  "theme_color": "#ff2d78",
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
   ]
 }
 ```
 
-Service worker: cache app shell + static assets. No need to cache API calls for MVP.
+Service worker: cache app shell + static assets (Phase 9). No need to cache API calls for MVP.
 
 ---
 

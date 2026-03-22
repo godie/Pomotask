@@ -1,13 +1,13 @@
 import Dexie, { type Table } from 'dexie'
 import type { Project, Task, PomodoroSession } from '@/types'
 
-export class PomodoroFlowDB extends Dexie {
+export class PomotaskDB extends Dexie {
   projects!: Table<Project>
   tasks!: Table<Task>
   sessions!: Table<PomodoroSession>
 
   constructor() {
-    super('PomodoroFlowDB')
+    super('PomotaskDB')
     this.version(1).stores({
       projects: 'id, createdAt',
       tasks: 'id, projectId, status, createdAt',
@@ -16,4 +16,4 @@ export class PomodoroFlowDB extends Dexie {
   }
 }
 
-export const db = new PomodoroFlowDB()
+export const db = new PomotaskDB()

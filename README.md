@@ -1,8 +1,8 @@
-# 🍅 PomodoroFlow
+# 🍅 Pomotask
 
 > A task management app where everything is measured in Pomodoros.
 
-PomodoroFlow combines a focused Pomodoro timer with project and task management. Estimate your tasks in Pomodoros, track focus sessions, compare estimated vs real Pomodoros, and stay productive with enforced break times.
+Pomotask combines a focused Pomodoro timer with project and task management. Estimate your tasks in Pomodoros, track focus sessions, compare estimated vs real Pomodoros, and stay productive with enforced break times.
 
 ---
 
@@ -20,74 +20,74 @@ PomodoroFlow combines a focused Pomodoro timer with project and task management.
 
 ## 🧱 Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | React 18 |
-| Routing | TanStack Router |
-| Server State | TanStack Query |
-| Local DB | IndexedDB via Dexie.js |
-| Auth (optional) | Supabase Auth |
-| Remote DB (optional) | Supabase (PostgreSQL) |
-| Styling | Tailwind CSS v4 |
-| UI Components | shadcn/ui |
-| Forms | TanStack Form |
-| Tables | TanStack Table |
-| Build | Vite |
-| Package manager | pnpm |
+| Layer                | Technology               |
+| -------------------- | ------------------------ |
+| Framework            | React 18                 |
+| Routing              | TanStack Router          |
+| Server State         | TanStack Query           |
+| Client State         | Zustand                  |
+| Local DB             | IndexedDB via Dexie.js   |
+| Auth (optional)      | Supabase Auth            |
+| Remote DB (optional) | Supabase (PostgreSQL)    |
+| Styling              | Tailwind CSS v4          |
+| UI Components        | shadcn/ui                |
+| Forms                | TanStack Form            |
+| Tables               | TanStack Table           |
+| Build                | Vite                     |
+| Tests                | Vitest + Testing Library |
+| Package manager      | pnpm                     |
 
 ---
 
 ## 🚀 Getting Started
 
-\`\`\`bash
-# Clone the repo
-git clone https://github.com/your-org/pomodoro-flow.git
-cd pomodoro-flow
+```bash
+# https://github.com/godie/Pomotask
+git clone https://github.com/godie/Pomotask.git
+cd Pomotask
 
 # Install dependencies
 pnpm install
 
-# Start dev server
+# Dev server
 pnpm dev
-\`\`\`
+```
+
+### Quality checks
+
+```bash
+pnpm typecheck   # TypeScript
+pnpm lint        # ESLint
+pnpm test:run    # Vitest + coverage
+pnpm build       # Production bundle
+```
 
 ### Environment variables (optional — for auth + sync)
 
-\`\`\`env
+```env
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-\`\`\`
+```
 
 If these are not set, the app runs fully offline with IndexedDB.
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Structure (current)
 
-\`\`\`
+```
 src/
-├── routes/              # TanStack Router file-based routes
-│   ├── index.tsx        # Dashboard / active timer
-│   ├── projects/        # Projects list + detail
-│   └── tasks/           # Task list + detail
-├── components/
-│   ├── timer/           # PomodoroTimer, TimerControls, BreakOverlay
-│   ├── tasks/           # TaskCard, TaskForm, TaskSplitDialog
-│   ├── projects/        # ProjectCard, ProjectForm, ProjectStats
-│   └── ui/              # shadcn/ui components
-├── hooks/
-│   ├── useTimer.ts      # Timer logic & state machine
-│   ├── useTasks.ts      # TanStack Query hooks for tasks
-│   └── useProjects.ts   # TanStack Query hooks for projects
-├── db/
-│   ├── schema.ts        # Dexie schema (IndexedDB)
-│   └── sync.ts          # Supabase sync when auth present
-├── stores/
-│   └── timerStore.ts    # Zustand store for active timer state
-└── lib/
-    ├── pomodoro.ts      # Pomodoro business logic & calculations
-    └── supabase.ts      # Supabase client init
-\`\`\`
+├── App.tsx
+├── main.tsx
+├── index.css
+├── db/                 # Dexie — projects, tasks, sessions
+├── lib/                # pomodoro helpers, supabase client, utils
+├── stores/             # timerStore (Zustand)
+├── tests/              # Vitest setup + unit tests
+└── types/              # Shared TypeScript types
+```
+
+TanStack Router file routes (`src/routes/`), UI components, and query hooks are added per [ROADMAP.md](./ROADMAP.md).
 
 ---
 
@@ -104,6 +104,7 @@ UI/UX designed in [Google Stitch](https://stitch.withgoogle.com/projects/6328229
 - [MVP Scope](./MVPSCOPE.md)
 - [Technical Specs](./SPECS.md)
 - [Roadmap & Tasks](./ROADMAP.md)
+- [CI/CD & pre-commit](./docs/CICD_SETUP.md)
 
 ---
 
