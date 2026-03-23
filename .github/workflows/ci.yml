@@ -167,4 +167,4 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           packageManager: pnpm
-          command: pages deploy dist --project-name=pomo-task --branch=main
+          command: pages deploy dist --project-name=pomotask --branch=main
