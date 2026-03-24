@@ -1,5 +1,6 @@
 import { db } from './schema'
 import type { Task } from '@/types'
+import { splitTask } from '@/lib/pomodoro'
 
 export async function getAllTasks(): Promise<Task[]> {
   return db.tasks.toArray()
@@ -45,4 +46,21 @@ export async function incrementRealPomodoros(id: string): Promise<void> {
       updatedAt: Date.now()
     })
   }
+}
+
+export async function splitTaskInDB(id: string): Promise<Task[]> {
+  const task = await db.tasks.get(id)
+  if (!task) throw new Error(`Task ${id} not found`)
+
+  const subtasks = splitTask(task)
+
+  await db.transaction('rw', db.tasks, async () => {
+    await db.tasks.update(id, {
+      status: 'divided' as any,
+      updatedAt: Date.now()
+    })
+    await db.tasks.bulkAdd(subtasks)
+  })
+
+  return subtasks
 }

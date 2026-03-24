@@ -16,12 +16,14 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.15",
     "@supabase/supabase-js": "^2.45.4",
     "@tanstack/react-form": "latest",
     "@tanstack/react-query": "^5.56.2",
     "@tanstack/react-router": "latest",
     "@tanstack/react-table": "^8.20.5",
     "@tanstack/router-devtools": "^1.166.10",
+    "@tanstack/zod-form-adapter": "^0.42.1",
     "clsx": "^2.1.1",
     "dexie": "^4.0.8",
     "dexie-react-hooks": "^1.1.7",
@@ -29,6 +31,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.5.2",
+    "zod": "^4.3.6",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
@@ -60,6 +63,7 @@
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.18.1",
     "vite": "^5.4.2",
+    "vite-plugin-pwa": "^1.2.0",
     "vitest": "^3.0.0"
   }
 }

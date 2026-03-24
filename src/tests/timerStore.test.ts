@@ -7,6 +7,16 @@ import {
   LONG_BREAK,
   POMODOROS_UNTIL_LONG_BREAK,
 } from '@/lib/pomodoro'
+import { incrementRealPomodoros } from '@/db/tasks'
+import { createSession } from '@/db/sessions'
+
+vi.mock('@/db/tasks', () => ({
+  incrementRealPomodoros: vi.fn().mockResolvedValue(undefined),
+}))
+
+vi.mock('@/db/sessions', () => ({
+  createSession: vi.fn().mockResolvedValue({}),
+}))
 
 // Reset Zustand store between tests
 beforeEach(() => {
@@ -18,6 +28,7 @@ beforeEach(() => {
     totalPomodorosToday: 0,
     activeTaskId: null,
   })
+  vi.clearAllMocks()
   vi.useFakeTimers()
 })
 
@@ -107,28 +118,66 @@ describe('timerStore — setActiveTask', () => {
 })
 
 describe('timerStore — break transitions', () => {
-  it('transitions to short break after first Pomodoro', () => {
+  it('transitions to short break after first Pomodoro', async () => {
     const { result } = renderHook(() => useTimerStore())
-    act(() => {
-      useTimerStore.setState({ pomodorosCompleted: 1, status: 'idle', mode: 'focus' })
-      result.current.skip() // simulate completing focus
+    await act(async () => {
+      useTimerStore.setState({ pomodorosCompleted: 0, status: 'idle', mode: 'focus' })
+      await result.current.skip()
     })
-    // After 1 pomodoro, should go to short break
     expect(result.current.mode).toBe('short_break')
     expect(result.current.secondsLeft).toBe(SHORT_BREAK)
   })
 
-  it('transitions to long break after 4 Pomodoros', () => {
+  it('transitions to long break after 4 Pomodoros', async () => {
     const { result } = renderHook(() => useTimerStore())
-    act(() => {
+    await act(async () => {
       useTimerStore.setState({
         pomodorosCompleted: POMODOROS_UNTIL_LONG_BREAK - 1,
         status: 'running',
         mode: 'focus',
       })
-      result.current.skip()
+      await result.current.skip()
     })
     expect(result.current.mode).toBe('long_break')
     expect(result.current.secondsLeft).toBe(LONG_BREAK)
+  })
+})
+
+describe('timerStore — tick', () => {
+  it('decrements secondsLeft on tick', () => {
+    const { result } = renderHook(() => useTimerStore())
+    act(() => {
+      useTimerStore.setState({ status: 'running', secondsLeft: 100 })
+      result.current.tick()
+    })
+    expect(result.current.secondsLeft).toBe(99)
+  })
+
+  it('completes session when secondsLeft reaches 0', async () => {
+    const { result } = renderHook(() => useTimerStore())
+    await act(async () => {
+      useTimerStore.setState({ status: 'running', secondsLeft: 1 })
+      result.current.tick()
+    })
+    expect(result.current.status).toBe('idle')
+    expect(result.current.mode).not.toBe('focus')
+  })
+})
+
+describe('timerStore — side effects', () => {
+  it('calls incrementRealPomodoros and createSession when focus completes', async () => {
+    const { result } = renderHook(() => useTimerStore())
+    await act(async () => {
+      useTimerStore.setState({
+        mode: 'focus',
+        activeTaskId: 'task-1',
+        secondsLeft: 0,
+        status: 'running'
+      })
+      await result.current.skip()
+    })
+
+    expect(incrementRealPomodoros).toHaveBeenCalledWith('task-1')
+    expect(createSession).toHaveBeenCalled()
   })
 })

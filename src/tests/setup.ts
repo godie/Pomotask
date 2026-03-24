@@ -61,7 +61,10 @@ global.AudioContext = vi.fn().mockImplementation(() => ({
 }))
 
 // Mock Notification API
-global.Notification = {
-  permission: 'granted',
-  requestPermission: vi.fn().mockResolvedValue('granted'),
-} as unknown as typeof Notification
+class MockNotification {
+  static permission = 'granted'
+  static requestPermission = vi.fn().mockResolvedValue('granted')
+  constructor(_title: string, _options?: any) {}
+}
+
+global.Notification = MockNotification as any
