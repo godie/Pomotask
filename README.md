@@ -81,6 +81,7 @@ src/
 ├── main.tsx
 ├── index.css
 ├── db/                 # Dexie — projects, tasks, sessions
+├── hooks/              # Custom hooks (useTimer)
 ├── lib/                # pomodoro helpers, supabase client, utils
 ├── stores/             # timerStore (Zustand)
 ├── tests/              # Vitest setup + unit tests

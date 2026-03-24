@@ -16,6 +16,7 @@ vi.mock('@/db/schema', () => ({
       add: vi.fn().mockResolvedValue('mock-id'),
       put: vi.fn().mockResolvedValue('mock-id'),
       delete: vi.fn().mockResolvedValue(undefined),
+      update: vi.fn().mockResolvedValue(1),
       where: vi.fn().mockReturnThis(),
       equals: vi.fn().mockReturnThis(),
     },
@@ -24,6 +25,7 @@ vi.mock('@/db/schema', () => ({
       get: vi.fn().mockResolvedValue(undefined),
       add: vi.fn().mockResolvedValue('mock-id'),
       put: vi.fn().mockResolvedValue('mock-id'),
+      update: vi.fn().mockResolvedValue(1),
       delete: vi.fn().mockResolvedValue(undefined),
       where: vi.fn().mockReturnThis(),
       equals: vi.fn().mockReturnThis(),
@@ -33,6 +35,7 @@ vi.mock('@/db/schema', () => ({
       add: vi.fn().mockResolvedValue('mock-id'),
       where: vi.fn().mockReturnThis(),
       equals: vi.fn().mockReturnThis(),
+      aboveOrEqual: vi.fn().mockReturnThis(),
     },
   },
 }))

@@ -206,10 +206,25 @@ export const POMODOROS_UNTIL_LONG_BREAK = 4;
 
 **On focus session complete:**
 
-1. Increment `realPomodoros` on active task in IndexedDB
-2. Increment `pomodorosCompleted` in store
-3. Create a `PomodoroSession` record in DB
-4. If `pomodorosCompleted % 4 === 0` → start long break, else short break
+The `tick()` function (async) handles focus session completion when `secondsLeft` reaches 0:
+1. Increment `realPomodoros` on active task in IndexedDB.
+2. Increment `pomodorosCompleted` in store.
+3. Create a `PomodoroSession` record in DB with `type: "focus"`.
+4. Clear the current timer timeout.
+5. If `pomodorosCompleted % 4 === 0` → set mode to `long_break` and `secondsLeft` to `LONG_BREAK`.
+6. Else → set mode to `short_break` and `secondsLeft` to `SHORT_BREAK`.
+7. Set status to `break`.
+
+**On break session complete:**
+
+When `secondsLeft` reaches 0 in `short_break` or `long_break` mode:
+1. Clear the current timer timeout.
+2. Reset `mode` to `focus`.
+3. Reset `secondsLeft` to `FOCUS_DURATION`.
+4. Set `status` to `idle`.
+
+**Timer Loop Implementation Details:**
+The timer uses a recursive `setTimeout` pattern to ensure each `tick()` (which is asynchronous due to database operations) completes fully before the next tick is scheduled. This avoids race conditions and overlapping execution.
 
 ---
 

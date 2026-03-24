@@ -58,25 +58,25 @@
 
 > 🔴🟢♻️ TDD: Write tests in `src/tests/db/` BEFORE implementing each file.
 
-- [ ] **1.1** Create `src/db/schema.ts` with Dexie class as defined in SPECS
+- [x] **1.1** Create `src/db/schema.ts` with Dexie class as defined in SPECS
   - No test needed for schema — it's pure config. Verify by importing in step 1.2.
 
-- [ ] **1.2** 🔴🟢♻️ `src/db/projects.ts`
+- [x] **1.2** 🔴🟢♻️ `src/db/projects.ts`
   - 🔴 Write `src/tests/db/projects.test.ts` first — test all functions below (mock `db` from schema)
   - 🟢 Implement: `getAllProjects`, `getProjectById`, `createProject`, `updateProject`, `deleteProject`
   - ♻️ Ensure each function sets `createdAt`/`updatedAt` timestamps and generates `id` via `crypto.randomUUID()`
 
-- [ ] **1.3** 🔴🟢♻️ `src/db/tasks.ts`
+- [x] **1.3** 🔴🟢♻️ `src/db/tasks.ts`
   - 🔴 Write `src/tests/db/tasks.test.ts` first — cover all functions + edge cases for `incrementRealPomodoros`
   - 🟢 Implement: `getAllTasks`, `getTasksByProject`, `getTaskById`, `createTask`, `updateTask`, `deleteTask`, `incrementRealPomodoros`
   - ♻️ `incrementRealPomodoros` must be atomic (read → increment → write)
 
-- [ ] **1.4** 🔴🟢♻️ `src/db/sessions.ts`
+- [x] **1.4** 🔴🟢♻️ `src/db/sessions.ts`
   - 🔴 Write `src/tests/db/sessions.test.ts` first — test `getTodaySessions` filters by current day
   - 🟢 Implement: `createSession`, `getSessionsByTask`, `getTodaySessions`
   - ♻️ `getTodaySessions` uses `startedAt` timestamp (start of day → now)
 
-- [ ] **1.5** 🔴🟢♻️ `src/lib/pomodoro.ts`
+- [x] **1.5** 🔴🟢♻️ `src/lib/pomodoro.ts`
   - 🔴 Tests already exist in `src/tests/pomodoro.test.ts` — run them: `pnpm test:run` → must be RED
   - 🟢 Implement `shouldSplitTask()` and `splitTask()` and timer constants until all tests are GREEN
   - ♻️ Refactor, run again
@@ -89,17 +89,17 @@
 
 > 🔴🟢♻️ TDD: Tests already scaffolded in `src/tests/timerStore.test.ts`. Run them first — they must be RED.
 
-- [ ] **2.1** 🔴 Run `pnpm test:run` — `timerStore.test.ts` must fail (RED)
-- [ ] **2.2** 🟢 Create `src/stores/timerStore.ts` with Zustand store:
+- [x] **2.1** 🔴 Run `pnpm test:run` — `timerStore.test.ts` must fail (RED)
+- [x] **2.2** 🟢 Create `src/stores/timerStore.ts` with Zustand store:
   - Export `useTimerStore` (full interface from SPECS)
   - Implement `start`, `pause`, `resume`, `skip`, `reset`, `setActiveTask`
   - Make tests GREEN one by one
-- [ ] **2.3** 🔴🟢 Add test: `'decrements secondsLeft on tick'` → implement `tick()`
-- [ ] **2.4** 🔴🟢 Add test: `'calls incrementRealPomodoros on active task when focus completes'` → implement `onSessionComplete()` side effect
-- [ ] **2.5** 🔴🟢 Add test: `'creates a PomodoroSession record on focus complete'` → wire DB call
-- [ ] **2.6** 🔴🟢 Add test: `'interval runs tick every second when running'` → implement `setInterval` (use `vi.useFakeTimers()`)
-- [ ] **2.7** ♻️ Refactor store, run all tests → GREEN
-- [ ] **2.8** Create `src/hooks/useTimer.ts` — thin hook wrapping timerStore (no new tests needed, covered by store tests)
+- [x] **2.3** 🔴🟢 Add test: `'decrements secondsLeft on tick'` → implement `tick()`
+- [x] **2.4** 🔴🟢 Add test: `'calls incrementRealPomodoros on active task when focus completes'` → implement `onSessionComplete()` side effect
+- [x] **2.5** 🔴🟢 Add test: `'creates a PomodoroSession record on focus complete'` → wire DB call
+- [x] **2.6** 🔴🟢 Add test: `'interval runs tick every second when running'` → implement `setInterval` (use `vi.useFakeTimers()`)
+- [x] **2.7** ♻️ Refactor store, run all tests → GREEN
+- [x] **2.8** Create `src/hooks/useTimer.ts` — thin hook wrapping timerStore (no new tests needed, covered by store tests)
 
 **Commit**: `feat: Zustand timer store with state machine (TDD)`
 
@@ -282,8 +282,8 @@
 | Phase | Description                                         | Status |
 | ----- | --------------------------------------------------- | ------ |
 | 0     | Project Setup                                       | ✅     |
-| 1     | Database Layer                                      | ⬜     |
-| 2     | Timer Store                                         | ⬜     |
+| 1     | Database Layer                                      | ✅     |
+| 2     | Timer Store                                         | ✅     |
 | 3     | Query Hooks                                         | ⬜     |
 | 4     | Routing & Layout                                    | ⬜     |
 | 5     | Timer UI                                            | ⬜     |

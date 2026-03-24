@@ -7,6 +7,16 @@ import {
   LONG_BREAK,
   POMODOROS_UNTIL_LONG_BREAK,
 } from '@/lib/pomodoro'
+import { incrementRealPomodoros } from '@/db/tasks'
+import { createSession } from '@/db/sessions'
+
+vi.mock('@/db/tasks', () => ({
+  incrementRealPomodoros: vi.fn().mockResolvedValue(undefined),
+}))
+
+vi.mock('@/db/sessions', () => ({
+  createSession: vi.fn().mockResolvedValue({}),
+}))
 
 // Reset Zustand store between tests
 beforeEach(() => {
@@ -19,6 +29,7 @@ beforeEach(() => {
     activeTaskId: null,
   })
   vi.useFakeTimers()
+  vi.clearAllMocks()
 })
 
 afterEach(() => {
@@ -130,5 +141,146 @@ describe('timerStore — break transitions', () => {
     })
     expect(result.current.mode).toBe('long_break')
     expect(result.current.secondsLeft).toBe(LONG_BREAK)
+  })
+
+  it('transitions from break to focus when break ends', async () => {
+    const { result } = renderHook(() => useTimerStore())
+    await act(async () => {
+      useTimerStore.setState({
+        status: 'break',
+        mode: 'short_break',
+        secondsLeft: 0,
+      })
+      await result.current.tick()
+    })
+
+    expect(result.current.status).toBe('idle')
+    expect(result.current.mode).toBe('focus')
+    expect(result.current.secondsLeft).toBe(FOCUS_DURATION)
+  })
+})
+
+describe('timerStore — tick', () => {
+  it('decrements secondsLeft on tick', async () => {
+    const { result } = renderHook(() => useTimerStore())
+    await act(async () => {
+      result.current.start()
+      await result.current.tick()
+    })
+    expect(result.current.secondsLeft).toBe(FOCUS_DURATION - 1)
+  })
+
+  it('does not decrement when paused or idle', async () => {
+    const { result } = renderHook(() => useTimerStore())
+    const initial = result.current.secondsLeft
+    await act(async () => {
+      await result.current.tick()
+    })
+    expect(result.current.secondsLeft).toBe(initial)
+  })
+})
+
+describe('timerStore — focus completion', () => {
+  it('calls incrementRealPomodoros and createSession when focus completes', async () => {
+    const { result } = renderHook(() => useTimerStore())
+    await act(async () => {
+      useTimerStore.setState({
+        status: 'running',
+        mode: 'focus',
+        secondsLeft: 0,
+        activeTaskId: 'task-1',
+      })
+      await result.current.tick()
+    })
+
+    expect(incrementRealPomodoros).toHaveBeenCalledWith('task-1')
+    expect(createSession).toHaveBeenCalledWith(expect.objectContaining({
+      taskId: 'task-1',
+      type: 'focus'
+    }))
+    expect(result.current.pomodorosCompleted).toBe(1)
+  })
+
+  it('transitions to short break after focus completes', async () => {
+    const { result } = renderHook(() => useTimerStore())
+    await act(async () => {
+      useTimerStore.setState({
+        status: 'running',
+        mode: 'focus',
+        secondsLeft: 0,
+        pomodorosCompleted: 0,
+      })
+      await result.current.tick()
+    })
+
+    expect(result.current.mode).toBe('short_break')
+    expect(result.current.secondsLeft).toBe(SHORT_BREAK)
+  })
+
+  it('transitions to long break after 4th focus completes', async () => {
+    const { result } = renderHook(() => useTimerStore())
+    await act(async () => {
+      useTimerStore.setState({
+        status: 'running',
+        mode: 'focus',
+        secondsLeft: 0,
+        pomodorosCompleted: 3,
+      })
+      await result.current.tick()
+    })
+
+    expect(result.current.mode).toBe('long_break')
+    expect(result.current.secondsLeft).toBe(LONG_BREAK)
+  })
+})
+
+describe('timerStore — interval management', () => {
+  it('runs tick every second when running', () => {
+    const { result } = renderHook(() => useTimerStore())
+    act(() => {
+      result.current.start()
+    })
+
+    // Initial state after start
+    expect(result.current.secondsLeft).toBe(FOCUS_DURATION)
+
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
+    expect(result.current.secondsLeft).toBe(FOCUS_DURATION - 1)
+
+    act(() => {
+      vi.advanceTimersByTime(2000)
+    })
+    expect(result.current.secondsLeft).toBe(FOCUS_DURATION - 3)
+  })
+
+  it('stops ticking when paused', () => {
+    const { result } = renderHook(() => useTimerStore())
+    act(() => {
+      result.current.start()
+      vi.advanceTimersByTime(1000)
+      result.current.pause()
+    })
+
+    const pausedSeconds = result.current.secondsLeft
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
+    expect(result.current.secondsLeft).toBe(pausedSeconds)
+  })
+
+  it('stops ticking when reset', () => {
+    const { result } = renderHook(() => useTimerStore())
+    act(() => {
+      result.current.start()
+      vi.advanceTimersByTime(1000)
+      result.current.reset()
+    })
+
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
+    expect(result.current.secondsLeft).toBe(FOCUS_DURATION)
   })
 })
