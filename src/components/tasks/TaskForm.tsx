@@ -8,7 +8,7 @@ import { useSplitTask } from '@/hooks/useTasks'
 import type { Task } from '@/types'
 
 interface TaskFormProps {
-  onSubmit: (data: { name: string, projectId: string | null, estimatedPomodoros: number, realPomodoros: 0, status: 'pending' }) => void
+  onSubmit: (data: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => Promise<Task | undefined>
   onCancel: () => void
   initialData?: { name: string, projectId: string | null, estimatedPomodoros: number }
   title: string
@@ -25,14 +25,14 @@ export function TaskForm({ onSubmit, onCancel, initialData, title }: TaskFormPro
       projectId: null as string | null,
       estimatedPomodoros: 1,
     },
-    onSubmit: async ({ value }: any) => {
-      const taskData = { ...value, realPomodoros: 0 as const, status: 'pending' as const }
+    onSubmit: async ({ value }) => {
+      const taskData = { ...value, realPomodoros: 0, status: 'pending' as const }
 
       if (value.estimatedPomodoros > 5) {
-         const createdTask = await (onSubmit as any)(taskData)
+         const createdTask = await onSubmit(taskData)
          if (createdTask) setTaskToSplit(createdTask)
       } else {
-         onSubmit(taskData)
+         void onSubmit(taskData)
       }
     },
   })
@@ -49,7 +49,7 @@ export function TaskForm({ onSubmit, onCancel, initialData, title }: TaskFormPro
         onSubmit={(e) => {
           e.preventDefault()
           e.stopPropagation()
-          form.handleSubmit()
+          void form.handleSubmit()
         }}
         className="space-y-6 py-4"
       >

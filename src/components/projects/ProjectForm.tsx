@@ -1,9 +1,10 @@
 import { useForm } from '@tanstack/react-form'
 import { DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
+import type { Project } from '@/types'
 
 interface ProjectFormProps {
-  onSubmit: (data: { name: string, color: string, description?: string }) => void
+  onSubmit: (data: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>
   onCancel: () => void
   initialData?: { name: string, color: string, description?: string }
   title: string
@@ -16,8 +17,8 @@ export function ProjectForm({ onSubmit, onCancel, initialData, title }: ProjectF
       color: '#ff2d78',
       description: '',
     },
-    onSubmit: async ({ value }: any) => {
-      onSubmit(value)
+    onSubmit: async ({ value }) => {
+      await onSubmit(value)
     },
   })
 
@@ -31,7 +32,7 @@ export function ProjectForm({ onSubmit, onCancel, initialData, title }: ProjectF
         onSubmit={(e) => {
           e.preventDefault()
           e.stopPropagation()
-          form.handleSubmit()
+          void form.handleSubmit()
         }}
         className="space-y-6 py-4"
       >

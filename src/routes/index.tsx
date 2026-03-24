@@ -40,7 +40,7 @@ function IndexPage() {
           </div>
         </div>
 
-        {status === "idle" && mode !== "focus" && <BreakOverlay mode={mode as any} onSkip={skip} />}
+        {status === "idle" && mode !== "focus" && <BreakOverlay mode={mode} onSkip={skip} />}
         <TimerControls />
 
         <div className="w-full max-w-md bg-surface_container border border-outline/10 p-6 rounded-2xl shadow-xl">

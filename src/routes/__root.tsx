@@ -13,7 +13,7 @@ function RootLayout() {
 
     useEffect(() => {
       if (!supabase) return
-      supabase.auth.getUser().then(({ data }) => { setUser(data.user); })
+      void supabase.auth.getUser().then(({ data }) => { setUser(data.user); })
 
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
         setUser(session?.user ?? null)
@@ -22,7 +22,7 @@ function RootLayout() {
       return () => { subscription.unsubscribe(); }
     }, [])
 
-    const handleLogin = async () => {
+    const handleLogin = () => {
       if (!supabase) return
       alert("Auth is optional for MVP. Please set env vars to enable Supabase.")
     }

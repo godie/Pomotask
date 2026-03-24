@@ -1,5 +1,5 @@
 import { db } from './schema'
-import type { Task } from '@/types'
+import type { Task, TaskStatus } from '@/types'
 import { splitTask } from '@/lib/pomodoro'
 
 export async function getAllTasks(): Promise<Task[]> {
@@ -56,7 +56,7 @@ export async function splitTaskInDB(id: string): Promise<Task[]> {
 
   await db.transaction('rw', db.tasks, async () => {
     await db.tasks.update(id, {
-      status: 'divided' as any,
+      status: 'divided' as TaskStatus,
       updatedAt: Date.now()
     })
     await db.tasks.bulkAdd(subtasks)

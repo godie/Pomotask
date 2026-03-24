@@ -40,7 +40,7 @@ let timerInterval: ReturnType<typeof setInterval> | null = null
 
 const playBeep = () => {
   try {
-    const context = new (window.AudioContext || (window as any).webkitAudioContext)()
+    const context = new window.AudioContext()
     const oscillator = context.createOscillator()
     const gain = context.createGain()
     oscillator.connect(gain)
@@ -58,11 +58,11 @@ const playBeep = () => {
 
 const sendNotification = (title: string, body: string) => {
   if (Notification.permission === 'granted') {
-    new Notification(title, { body, icon: '/icons/icon-192.png' })
+    void new Notification(title, { body, icon: '/icons/icon-192.png' })
   } else if (Notification.permission !== 'denied') {
-    Notification.requestPermission().then(permission => {
+    void Notification.requestPermission().then(permission => {
       if (permission === 'granted') {
-        new Notification(title, { body, icon: '/icons/icon-192.png' })
+        void new Notification(title, { body, icon: '/icons/icon-192.png' })
       }
     })
   }
@@ -90,7 +90,7 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     if (status !== 'running') return
 
     if (secondsLeft <= 1) {
-      get().skip()
+      void get().skip()
     } else {
       set({ secondsLeft: secondsLeft - 1 })
     }
