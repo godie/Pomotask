@@ -27,14 +27,14 @@ function IndexPage() {
     const pendingTasks = tasks?.filter(t => t.status === 'pending' && t.id !== activeTaskId) || []
 
     return (
-      <div className="flex flex-col items-center justify-center space-y-12 py-10 animate-in fade-in duration-700">
+      <div className="flex flex-col items-center justify-center space-y-8 sm:space-y-12 py-6 sm:py-10 animate-in fade-in duration-700">
         <div className="relative group">
           <TimerRing progress={progress} mode={mode} />
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="font-label text-sm uppercase tracking-widest text-on_surface_variant mb-2">
               {mode.replace('_', ' ')}
             </span>
-            <span className={cn("font-headline text-6xl font-bold tracking-tighter tabular-nums", modeColors[mode])}>
+            <span className={cn("font-headline text-5xl sm:text-6xl font-bold tracking-tighter tabular-nums", modeColors[mode])}>
               {formatTime(secondsLeft)}
             </span>
           </div>

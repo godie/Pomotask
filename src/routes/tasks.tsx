@@ -25,14 +25,14 @@ function TasksPage() {
 
     return (
       <div className="animate-in fade-in duration-500">
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex justify-between items-center mb-6 sm:mb-10">
           <div>
-            <h1 className="text-3xl font-headline font-bold text-tertiary mb-2">Tasks</h1>
+            <h1 className="text-2xl sm:text-3xl font-headline font-bold text-tertiary mb-2">Tasks</h1>
             <p className="text-on_surface_variant text-sm">Focus on one neon step at a time.</p>
           </div>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
-              <button className="bg-tertiary text-on_tertiary px-6 py-3 rounded-xl font-headline font-bold uppercase tracking-widest flex items-center gap-2 shadow-[0_0_15px_rgba(255,224,74,0.3)] hover:shadow-[0_0_25px_rgba(255,224,74,0.5)] transition-all active:scale-95">
+              <button className="bg-tertiary text-on_tertiary px-4 py-2.5 sm:px-6 sm:py-3 rounded-xl font-headline font-bold uppercase tracking-widest flex items-center gap-2 shadow-[0_0_15px_rgba(255,224,74,0.3)] hover:shadow-[0_0_25px_rgba(255,224,74,0.5)] transition-all active:scale-95">
                 <Plus size={20} />
                 <span className="hidden sm:inline">New Task</span>
               </button>
@@ -49,7 +49,7 @@ function TasksPage() {
           </Dialog>
         </div>
 
-        <div className="space-y-12">
+        <div className="space-y-8 sm:space-y-12">
            {pendingTasks.length > 0 && (
               <section>
                  <h2 className="font-label text-xs uppercase tracking-[0.2em] text-on_surface_variant mb-4 flex items-center gap-2">

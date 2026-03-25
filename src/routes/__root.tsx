@@ -1,4 +1,5 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
+import { Timer, Layers, ListTodo } from 'lucide-react'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { useTimerStore } from '@/stores/timerStore'
 import { formatTime } from '@/lib/utils'
@@ -62,9 +63,34 @@ function RootLayout() {
           </div>
         </nav>
 
-        <main className="container mx-auto px-4 py-8 max-w-4xl">
+        <main className="container mx-auto px-4 py-8 max-w-4xl mb-20 md:mb-8">
           <Outlet />
         </main>
+        <footer className="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-outline/20 z-50 pb-safe">
+          <div className="flex justify-around items-center h-16">
+            <Link
+              to="/"
+              className="flex flex-col items-center gap-1 text-on_surface_variant transition-colors [&.active]:text-primary"
+            >
+              <Timer size={20} />
+              <span className="text-[10px] font-label uppercase tracking-tighter">Timer</span>
+            </Link>
+            <Link
+              to="/projects"
+              className="flex flex-col items-center gap-1 text-on_surface_variant transition-colors [&.active]:text-primary"
+            >
+              <Layers size={20} />
+              <span className="text-[10px] font-label uppercase tracking-tighter">Projects</span>
+            </Link>
+            <Link
+              to="/tasks"
+              className="flex flex-col items-center gap-1 text-on_surface_variant transition-colors [&.active]:text-primary"
+            >
+              <ListTodo size={20} />
+              <span className="text-[10px] font-label uppercase tracking-tighter">Tasks</span>
+            </Link>
+          </div>
+        </footer>
         <TanStackRouterDevtools />
       </div>
     )

@@ -22,23 +22,23 @@ export function TaskCard({ task, onDelete, onToggleComplete }: TaskCardProps) {
 
   return (
     <div className={cn(
-      "bg-surface_container border border-outline/10 p-5 rounded-2xl shadow-lg transition-all duration-300 flex items-center gap-4",
+      "bg-surface_container border border-outline/10 p-4 sm:p-5 rounded-2xl shadow-lg transition-all duration-300 flex items-center gap-3 sm:gap-4",
       isActive && "border-primary/40 shadow-primary/5 ring-1 ring-primary/20",
       isCompleted && "opacity-60"
     )}>
       <button
         onClick={() => { onToggleComplete(task); }}
         className={cn(
-          "w-6 h-6 rounded-full border-2 transition-colors flex items-center justify-center",
+          "w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 transition-colors flex items-center justify-center",
           isCompleted ? "bg-tertiary border-tertiary text-on_tertiary" : "border-outline/30 hover:border-tertiary"
         )}
       >
-        {isCompleted && <CheckCircle size={14} />}
+        {isCompleted && <CheckCircle size={12} className="sm:w-[14px] sm:h-[14px]" />}
       </button>
 
       <div className="flex-1 min-w-0">
         <h4 className={cn(
-          "font-headline font-bold text-on_surface transition-all truncate",
+          "font-headline font-bold text-sm sm:text-base text-on_surface transition-all truncate",
           isCompleted && "line-through text-on_surface_variant"
         )}>
           {task.name}
@@ -51,21 +51,21 @@ export function TaskCard({ task, onDelete, onToggleComplete }: TaskCardProps) {
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         {!isCompleted && !isActive && (
           <button
             onClick={handleStart}
-            className="p-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-all shadow-[0_0_10px_rgba(255,45,120,0.1)] active:scale-90"
+            className="p-2 sm:p-2.5 rounded-xl bg-primary/10 text-primary hover:bg-primary/20 transition-all shadow-[0_0_10px_rgba(255,45,120,0.1)] active:scale-90"
             title="Start Timer"
           >
-            <Play size={18} fill="currentColor" />
+            <Play size={16} className="sm:w-[18px] sm:h-[18px]" fill="currentColor" />
           </button>
         )}
         <button
           onClick={() => { onDelete(task.id); }}
-          className="p-2.5 rounded-xl text-on_surface_variant hover:text-error hover:bg-error/10 transition-colors"
+          className="p-2 sm:p-2.5 rounded-xl text-on_surface_variant hover:text-error hover:bg-error/10 transition-colors"
         >
-          <Trash2 size={18} />
+          <Trash2 size={16} className="sm:w-[18px] sm:h-[18px]" />
         </button>
       </div>
     </div>

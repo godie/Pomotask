@@ -10,7 +10,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, onDelete, onEdit }: ProjectCardProps) {
   return (
-    <div className="bg-surface_container border border-outline/10 p-6 rounded-2xl shadow-xl transition-all duration-300 hover:border-secondary/40 hover:shadow-secondary/5 group">
+    <div className="bg-surface_container border border-outline/10 p-5 sm:p-6 rounded-2xl shadow-xl transition-all duration-300 hover:border-secondary/40 hover:shadow-secondary/5 group">
       <div className="flex justify-between items-start mb-6">
         <div
           className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
@@ -18,7 +18,7 @@ export function ProjectCard({ project, onDelete, onEdit }: ProjectCardProps) {
         >
           <Folder size={24} style={{ color: project.color }} />
         </div>
-        <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           <button
             onClick={() => { onEdit(project); }}
             className="p-2 rounded-lg bg-surface_variant text-on_surface_variant hover:text-secondary hover:bg-secondary/10 transition-colors"
