@@ -10,7 +10,7 @@ export function TimerControls() {
   const isPaused = status === 'paused'
   const isIdle = status === 'idle'
 
-  const buttonBase = "p-4 rounded-full transition-all duration-300 transform active:scale-95 shadow-lg border-2"
+  const buttonBase = "p-3 sm:p-4 rounded-full transition-all duration-300 transform active:scale-95 shadow-lg border-2"
 
   const colors = {
     focus: 'border-primary/50 text-primary hover:bg-primary/10 shadow-primary/20',
@@ -19,13 +19,13 @@ export function TimerControls() {
   }
 
   return (
-    <div className="flex gap-6 items-center">
+    <div className="flex gap-4 sm:gap-6 items-center">
       <button
         onClick={reset}
         className={cn(buttonBase, "border-outline/30 text-outline hover:bg-surface_variant")}
         title="Reset"
       >
-        <RotateCcw size={24} />
+        <RotateCcw size={20} className="sm:w-6 sm:h-6" />
       </button>
 
       {isIdle && (
@@ -33,7 +33,7 @@ export function TimerControls() {
           onClick={start}
           className={cn(buttonBase, colors[mode], "bg-surface")}
         >
-          <Play size={32} fill="currentColor" />
+          <Play size={28} className="sm:w-8 sm:h-8" fill="currentColor" />
         </button>
       )}
 
@@ -42,7 +42,7 @@ export function TimerControls() {
           onClick={pause}
           className={cn(buttonBase, colors[mode], "bg-surface")}
         >
-          <Pause size={32} fill="currentColor" />
+          <Pause size={28} className="sm:w-8 sm:h-8" fill="currentColor" />
         </button>
       )}
 
@@ -51,7 +51,7 @@ export function TimerControls() {
           onClick={resume}
           className={cn(buttonBase, colors[mode], "bg-surface animate-pulse")}
         >
-          <Play size={32} fill="currentColor" />
+          <Play size={28} className="sm:w-8 sm:h-8" fill="currentColor" />
         </button>
       )}
 
@@ -60,7 +60,7 @@ export function TimerControls() {
         className={cn(buttonBase, "border-outline/30 text-outline hover:bg-surface_variant")}
         title="Skip"
       >
-        <SkipForward size={24} />
+        <SkipForward size={20} className="sm:w-6 sm:h-6" />
       </button>
     </div>
   )

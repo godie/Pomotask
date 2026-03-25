@@ -14,21 +14,21 @@ function ProjectsPage() {
     const [isCreateOpen, setIsCreateOpen] = useState(false)
 
     if (isLoading) return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {[1,2,3].map(i => <Skeleton key={i} className="h-48 rounded-2xl" />)}
       </div>
     )
 
     return (
       <div className="animate-in fade-in duration-500">
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex justify-between items-center mb-6 sm:mb-10">
           <div>
-            <h1 className="text-3xl font-headline font-bold text-secondary mb-2">Projects</h1>
+            <h1 className="text-2xl sm:text-3xl font-headline font-bold text-secondary mb-2">Projects</h1>
             <p className="text-on_surface_variant text-sm">Organize your Pomodoros by project.</p>
           </div>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
-              <button className="bg-secondary text-on_secondary px-6 py-3 rounded-xl font-headline font-bold uppercase tracking-widest flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,204,0.3)] hover:shadow-[0_0_25px_rgba(0,255,204,0.5)] transition-all active:scale-95">
+              <button className="bg-secondary text-on_secondary px-4 py-2.5 sm:px-6 sm:py-3 rounded-xl font-headline font-bold uppercase tracking-widest flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,204,0.3)] hover:shadow-[0_0_25px_rgba(0,255,204,0.5)] transition-all active:scale-95">
                 <Plus size={20} />
                 <span className="hidden sm:inline">New Project</span>
               </button>
@@ -56,7 +56,7 @@ function ProjectsPage() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {projects?.map((project) => (
               <ProjectCard
                 key={project.id}

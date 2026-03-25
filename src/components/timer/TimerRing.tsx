@@ -20,18 +20,18 @@ export function TimerRing({ progress, mode, className }: TimerRingProps) {
 
   return (
     <div className={cn("relative flex items-center justify-center", className)}>
-      <svg className="w-72 h-72 transform -rotate-90">
+      <svg viewBox="0 0 300 300" className="w-64 h-64 sm:w-72 sm:h-72 transform -rotate-90">
         <circle
-          cx="144"
-          cy="144"
-          r={radius}
+          cx="150"
+          cy="150"
+          r="120"
           className="stroke-surface_variant fill-none"
           strokeWidth="8"
         />
         <circle
-          cx="144"
-          cy="144"
-          r={radius}
+          cx="150"
+          cy="150"
+          r="120"
           className={cn(
             "fill-none transition-all duration-1000 ease-linear",
             colors[mode]
