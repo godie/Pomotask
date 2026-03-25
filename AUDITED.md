@@ -21,55 +21,54 @@ Findings:
 
 ### Task 1.2 — `src/db/projects.ts`
 
-**Status: [~]**
+**Status: [x]**
 
-Issues:
+Findings:
 
-- Missing tests: getProjectById, updateProject, deleteProject
-- Only 2 tests: getAllProjects, createProject
+- ✅ All CRUD operations tested and verified via TDD.
+- ✅ Error handling for missing projects verified.
 
 Action Plan:
 
-- [ ] Add test: `getProjectById returns correct project`
-- [ ] Add test: `updateProject updates and returns updated project`
-- [ ] Add test: `updateProject throws error when project not found`
-- [ ] Add test: `deleteProject calls db.projects.delete`
+- [x] Add test: `getProjectById returns correct project`
+- [x] Add test: `updateProject updates and returns updated project`
+- [x] Add test: `updateProject throws error when project not found`
+- [x] Add test: `deleteProject calls db.projects.delete`
 
 ---
 
 ### Task 1.3 — `src/db/tasks.ts`
 
-**Status: [~]**
+**Status: [x]**
 
-Issues:
+Findings:
 
-- Missing tests: getTasksByProject, getTaskById, createTask, updateTask, deleteTask, splitTaskInDB
-- Only 2 tests: getAllTasks, incrementRealPomodoros
+- ✅ All CRUD operations and business logic (splitTaskInDB) tested and verified via TDD.
+- ✅ Proper TypeScript compliance in tests.
 
 Action Plan:
 
-- [ ] Add test: `getTasksByProject filters by projectId`
-- [ ] Add test: `getTaskById returns correct task`
-- [ ] Add test: `createTask generates id, createdAt, updatedAt`
-- [ ] Add test: `updateTask updates specified fields`
-- [ ] Add test: `deleteTask removes task from DB`
-- [ ] Add test: `splitTaskInDB marks original as divided and creates subtasks`
+- [x] Add test: `getTasksByProject filters by projectId`
+- [x] Add test: `getTaskById returns correct task`
+- [x] Add test: `createTask generates id, createdAt, updatedAt`
+- [x] Add test: `updateTask updates specified fields`
+- [x] Add test: `deleteTask removes task from DB`
+- [x] Add test: `splitTaskInDB marks original as divided and creates subtasks`
 
 ---
 
 ### Task 1.4 — `src/db/sessions.ts`
 
-**Status: [~]**
+**Status: [x]**
 
-Issues:
+Findings:
 
-- Only 1 test exists (createSession)
-- Missing: getSessionsByTask, getTodaySessions
+- ✅ Verified retrieval by task and date filtering.
 
 Action Plan:
 
-- [ ] Add test: `getSessionsByTask returns sessions for specific task`
-- [ ] Add test: `getTodaySessions filters to today's date`
+- [x] Add test: `getSessionsByTask returns sessions for specific task`
+- [x] Add test: `getTodaySessions filters to today's date`
 
 ---
 
@@ -617,7 +616,7 @@ Action Plan:
 
 | Phase | Fully Verified [x] | Partial [~] | Missing [ ] |
 | ----- | ------------------ | ----------- | ----------- |
-| 1     | 1                  | 3           | 0           |
+| 1     | 4                  | 0           | 0           |
 | 2     | 0                  | 1           | 1           |
 | 3     | 1                  | 1           | 0           |
 | 4     | 0                  | 1           | 2           |
