@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
-import { zodValidator } from '@tanstack/zod-form-adapter'
-import { z } from 'zod'
+import { zodValidator } from "@tanstack/zod-form-adapter";
+import { z } from "zod";
 import {
   DialogContent,
   DialogHeader,
@@ -32,10 +32,13 @@ interface TaskFormProps {
 }
 
 const taskSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(60, 'Name must be 60 characters or less'),
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(60, "Name must be 60 characters or less"),
   projectId: z.string().nullable(),
   estimatedPomodoros: z.number().min(1).max(10),
-})
+});
 
 export function TaskForm({
   onSubmit,
@@ -85,7 +88,6 @@ export function TaskForm({
 
         <form
           onSubmit={(e) => {
-            e.preventDefault();
             e.stopPropagation();
             void form.handleSubmit();
           }}
@@ -114,17 +116,20 @@ export function TaskForm({
                   }}
                   className={cn(
                     "w-full bg-surface_variant border-b-2 border-outline/20 p-3 outline-none transition-all focus:border-tertiary font-headline",
-                    field.state.meta.errors.length > 0 && "border-error"
+                    field.state.meta.errors.length > 0 && "border-error",
                   )}
                   placeholder="Launch rocket..."
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-xs text-error">
-                    {field.state.meta.errors.map((err) => {
-                      if (typeof err === 'string') return err
-                      if (err && typeof err === 'object' && 'message' in err) return err.message
-                      return JSON.stringify(err)
-                    }).join(', ')}
+                    {field.state.meta.errors
+                      .map((err) => {
+                        if (typeof err === "string") return err;
+                        if (err && typeof err === "object" && "message" in err)
+                          return err.message;
+                        return JSON.stringify(err);
+                      })
+                      .join(", ")}
                   </p>
                 )}
               </div>
@@ -167,7 +172,10 @@ export function TaskForm({
             children={(field) => (
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <label className="font-label text-[10px] uppercase tracking-wider text-on_surface_variant">
+                  <label
+                    htmlFor="estimatedPomodoros"
+                    className="font-label text-[10px] uppercase tracking-wider text-on_surface_variant"
+                  >
                     Estimation (Pomodoros)
                   </label>
                   <span
@@ -180,6 +188,7 @@ export function TaskForm({
                   </span>
                 </div>
                 <input
+                  id="estimatedPomodoros"
                   type="range"
                   min="1"
                   max="10"
