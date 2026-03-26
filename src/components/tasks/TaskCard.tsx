@@ -37,6 +37,7 @@ export function TaskCard({ task, onDelete, onToggleComplete }: TaskCardProps) {
             ? "bg-tertiary border-tertiary text-on_tertiary"
             : "border-outline/30 hover:border-tertiary",
         )}
+        aria-label="Toggle complete"
       >
         {isCompleted && (
           <CheckCircle size={12} className="sm:w-[14px] sm:h-[14px]" />
@@ -84,6 +85,7 @@ export function TaskCard({ task, onDelete, onToggleComplete }: TaskCardProps) {
             onDelete(task.id);
           }}
           className="p-2 sm:p-2.5 rounded-xl text-on_surface_variant hover:text-error hover:bg-error/10 transition-colors"
+          aria-label="Delete task"
         >
           <Trash2 size={16} className="sm:w-[18px] sm:h-[18px]" />
         </button>

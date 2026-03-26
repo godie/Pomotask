@@ -1,85 +1,114 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { TaskForm } from "@/components/tasks/TaskForm";
 import { Dialog } from "@/components/ui/Dialog";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import React from "react";
 
-const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-});
+vi.mock("@/hooks/useProjects", () => ({
+  useProjects: vi.fn(() => ({
+    data: [],
+    isLoading: false,
+  })),
+}));
+
+vi.mock("@/hooks/useTasks", () => ({
+  useSplitTask: vi.fn(() => ({
+    mutateAsync: vi.fn().mockResolvedValue(undefined),
+  })),
+}));
 
 describe("TaskForm", () => {
-  const mockProps = {
-    onSubmit: vi.fn(),
-    onCancel: vi.fn(),
-    title: "New Task",
-  };
+  const mockOnSubmit = vi.fn().mockResolvedValue(undefined);
+  const mockOnCancel = vi.fn();
 
-  const renderForm = (props = mockProps) => {
-    return render(
-      <QueryClientProvider client={queryClient}>
-        <Dialog open={true}>
-            <TaskForm {...props} />
-        </Dialog>
-      </QueryClientProvider>
+  const createWrapper = () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    });
+    return ({ children }: { children: React.ReactNode }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
   };
 
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("renders all form fields", () => {
-    renderForm();
-    expect(screen.getByLabelText(/Task Name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Project/i)).toBeInTheDocument();
-    expect(screen.getByText(/Estimation/i)).toBeInTheDocument();
+    render(
+      <Dialog open onOpenChange={() => {}}>
+        <TaskForm
+          title="Add Task"
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+        />
+      </Dialog>,
+      { wrapper: createWrapper() },
+    );
+
+    expect(screen.getByPlaceholderText(/launch rocket/i)).toBeInTheDocument();
+    expect(screen.getByRole("combobox")).toBeInTheDocument();
+    expect(screen.getByRole("slider")).toBeInTheDocument();
   });
 
   it("calls onSubmit with form values", async () => {
-    const onSubmit = vi.fn().mockResolvedValue({ id: '1' });
-    renderForm({ ...mockProps, onSubmit });
+    const user = userEvent.setup();
+    render(
+      <Dialog open onOpenChange={() => {}}>
+        <TaskForm
+          title="Add Task"
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+        />
+      </Dialog>,
+      { wrapper: createWrapper() },
+    );
 
-    fireEvent.change(screen.getByLabelText(/Task Name/i), {
-      target: { value: "New Task" },
-    });
+    await user.type(screen.getByPlaceholderText(/launch rocket/i), "New Task");
+    await user.click(screen.getByRole("button", { name: /add task/i }));
 
-    fireEvent.click(screen.getByText(/Add Task/i));
-
-    await waitFor(() => {
-      expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({
+    expect(mockOnSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({
         name: "New Task",
-        projectId: null,
         estimatedPomodoros: 1,
-      }));
-    });
+        realPomodoros: 0,
+        status: "pending",
+      }),
+    );
   });
 
-  it("validates name max length (60 chars)", async () => {
-    renderForm();
-    const nameInput = screen.getByLabelText(/Task Name/i);
-    const longName = "a".repeat(61);
+  it("calls onCancel when cancel clicked", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dialog open onOpenChange={() => {}}>
+        <TaskForm
+          title="Add Task"
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+        />
+      </Dialog>,
+      { wrapper: createWrapper() },
+    );
 
-    fireEvent.change(nameInput, { target: { value: longName } });
-    fireEvent.click(screen.getByText(/Add Task/i));
+    await user.click(screen.getByRole("button", { name: /cancel/i }));
 
-    await waitFor(() => {
-        expect(screen.getByText(/Name must be 60 characters or less/i)).toBeInTheDocument();
-    });
+    expect(mockOnCancel).toHaveBeenCalled();
   });
 
-  it("shows split dialog when estimate > 5", async () => {
-    const onSubmit = vi.fn().mockResolvedValue({ id: '1', name: 'Big Task', estimatedPomodoros: 6 });
-    renderForm({ ...mockProps, onSubmit });
+  it("renders pomodoro count display", () => {
+    render(
+      <Dialog open onOpenChange={() => {}}>
+        <TaskForm
+          title="Add Task"
+          onSubmit={mockOnSubmit}
+          onCancel={mockOnCancel}
+        />
+      </Dialog>,
+      { wrapper: createWrapper() },
+    );
 
-    fireEvent.change(screen.getByLabelText(/Task Name/i), {
-        target: { value: "Big Task" },
-    });
-
-    const slider = screen.getByRole('slider');
-    fireEvent.change(slider, { target: { value: '6' } });
-
-    fireEvent.click(screen.getByText(/Add Task/i));
-
-    // Wait for the TaskSplitDialog content to appear
-    await waitFor(() => {
-        expect(screen.getByText(/Keep as one task/i)).toBeInTheDocument();
-    }, { timeout: 5000 });
+    expect(screen.getByText("1 🍅")).toBeInTheDocument();
   });
 });

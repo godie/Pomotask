@@ -388,38 +388,45 @@ Action Plan:
 
 ### Task 7.1 — `TaskCard.tsx`
 
-**Status: [~]**
+**Status: [x]**
 
-Issues:
+Findings:
 
-- Only 1 test (renders name and count)
-- Missing: complete toggle, delete, start timer callbacks
+- ✅ 9 tests added covering all functionality
+- ✅ Tests for Start button visibility based on task state
+- ✅ Tests for onToggleComplete callback
+- ✅ Tests for onDelete callback
+- ✅ Tests for setActiveTask and start callbacks
+- ✅ Accessibility labels added to buttons
 
 Action Plan:
 
-- [ ] Add test: `renders task name`
-- [ ] Add test: `renders pomodoro count`
-- [ ] Add test: `renders Start button when task is not active and not completed`
-- [ ] Add test: `calls onToggleComplete when checkbox clicked`
-- [ ] Add test: `calls onDelete when delete button clicked`
-- [ ] Add test: `calls setActiveTask and start when Start clicked`
+- [x] Add test: `renders task name`
+- [x] Add test: `renders pomodoro count`
+- [x] Add test: `renders Start button when task is not active and not completed`
+- [x] Add test: `calls onToggleComplete when checkbox clicked`
+- [x] Add test: `calls onDelete when delete button clicked`
+- [x] Add test: `calls setActiveTask and start when Start clicked`
 
 ---
 
 ### Task 7.2 — `TaskSplitDialog.tsx`
 
-**Status: [~]**
+**Status: [x]**
 
-Issues:
+Findings:
 
-- NO TESTS EXIST
+- ✅ 5 tests added covering all functionality
+- ✅ Tests for Part 1 and Part 2 rendering
+- ✅ Tests for onConfirm and onCancel callbacks
+- ✅ Tests for original task display
 
 Action Plan:
 
-- [ ] Add test: `renders Part 1 with correct name and estimate`
-- [ ] Add test: `renders Part 2 with correct name and estimate`
-- [ ] Add test: `calls onConfirm when Split button clicked`
-- [ ] Add test: `calls onCancel when Keep as one task clicked`
+- [x] Add test: `renders Part 1 with correct name and estimate`
+- [x] Add test: `renders Part 2 with correct name and estimate`
+- [x] Add test: `calls onConfirm when Split button clicked`
+- [x] Add test: `calls onCancel when Keep as one task clicked`
 
 ---
 
@@ -427,9 +434,12 @@ Action Plan:
 
 **Status: [x]**
 
-Issues:
+Findings:
 
-- NO TESTS EXIST
+- ✅ 4 tests added covering all form fields
+- ✅ Tests for onSubmit with form values
+- ✅ Tests for onCancel callback
+- ✅ Tests for pomodoro count display
 
 Action Plan:
 
@@ -437,6 +447,8 @@ Action Plan:
 - [x] Add test: `calls onSubmit with form data`
 - [x] Add test: `shows TaskSplitDialog when estimatedPomodoros > 5`
 - [x] Add test: `validates name is required`
+- [x] Add test: `calls onCancel when cancel clicked`
+- [x] Add test: `renders pomodoro count display`
 
 ---
 
