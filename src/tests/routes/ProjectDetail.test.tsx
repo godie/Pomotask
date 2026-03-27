@@ -2,14 +2,13 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { createRouter, RouterProvider, createRootRoute, createRoute, Outlet, createMemoryHistory } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React from 'react';
 
 vi.mock("@/hooks/useProjects", () => ({
   useProject: vi.fn(),
   useProjects: vi.fn(() => ({ data: [] })),
-  useUpdateProject: vi.fn(() => ({ mutateAsync: vi.fn() })),
-  useCreateProject: vi.fn(() => ({ mutateAsync: vi.fn() })),
-  useDeleteProject: vi.fn(() => ({ mutateAsync: vi.fn() })),
+  useUpdateProject: vi.fn(),
+  useCreateProject: vi.fn(),
+  useDeleteProject: vi.fn(),
 }));
 
 vi.mock("@/hooks/useTasks", () => ({

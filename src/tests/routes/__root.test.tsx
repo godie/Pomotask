@@ -17,6 +17,10 @@ vi.mock("@/components/ui/ErrorBoundary", () => ({
   ErrorBoundary: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+vi.mock("@tanstack/router-devtools", () => ({
+  TanStackRouterDevtools: () => null,
+}));
+
 describe("RootLayout", () => {
   const createMockRouter = () => {
     const rootRoute = RootRoute;

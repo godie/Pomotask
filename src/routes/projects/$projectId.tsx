@@ -75,7 +75,7 @@ function ProjectDetailPage() {
           </DialogTrigger>
           <TaskForm
             title="Add Task to Project"
-            initialValues={{ projectId: project.id }}
+            initialData={{ name: '', projectId: project.id, estimatedPomodoros: 1 }}
             onSubmit={async (data) => {
               const created = await createTask({ ...data, projectId: project.id });
               if (data.estimatedPomodoros <= 5) setIsCreateOpen(false);

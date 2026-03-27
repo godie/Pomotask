@@ -29,8 +29,9 @@ export function SignInForm({ onSuccess }: { onSuccess?: () => void }) {
       if (onSuccess) {
         onSuccess()
       }
-    } catch (error: any) {
-      setMessage({ type: 'error', text: error?.message || 'Failed to send magic link' })
+    } catch (error: unknown) {
+      const err = error as { message?: string }
+      setMessage({ type: 'error', text: err.message || 'Failed to send magic link' })
     } finally {
       setIsLoading(false)
     }
@@ -45,7 +46,7 @@ export function SignInForm({ onSuccess }: { onSuccess?: () => void }) {
         </DialogDescription>
       </DialogHeader>
 
-      <form onSubmit={handleSubmit} className="space-y-6 py-4">
+      <form onSubmit={(e) => { void handleSubmit(e) }} className="space-y-6 py-4">
         <div className="space-y-2">
           <label htmlFor="email" className="font-label text-xs uppercase tracking-widest text-on_surface_variant">
             Email Address

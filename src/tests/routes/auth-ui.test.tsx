@@ -1,82 +1,103 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { createRouter, RouterProvider } from '@tanstack/react-router'
+import { render, screen, waitFor, act } from '@testing-library/react'
+import { createRouter, RouterProvider, createRoute } from '@tanstack/react-router'
 import { Route as RootRoute } from '@/routes/__root'
 import { supabase } from '@/lib/supabase'
+import type { AuthChangeEvent, Session, Subscription } from '@supabase/supabase-js'
 
 vi.mock('@/lib/supabase', () => ({
   supabase: {
     auth: {
-      getUser: vi.fn(),
-      onAuthStateChange: vi.fn(),
-      signOut: vi.fn(),
+      getUser: vi.fn().mockResolvedValue({ data: { user: null } }),
+      onAuthStateChange: vi.fn().mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } }),
+      signOut: vi.fn().mockResolvedValue({ error: null }),
     },
   },
 }))
 
-describe('User Authentication UI', () => {
+vi.mock("@tanstack/router-devtools", () => ({
+  TanStackRouterDevtools: () => null,
+}));
+
+// Mock timerStore
+vi.mock("@/stores/timerStore", () => ({
+  useTimerStore: vi.fn(() => ({
+    status: 'idle',
+    secondsLeft: 1500,
+    mode: 'focus',
+  })),
+}))
+
+describe('Auth UI Integration', () => {
+  const createMockRouter = () => {
+    const rootRoute = RootRoute;
+    const indexRoute = createRoute({
+        getParentRoute: () => rootRoute,
+        path: '/',
+        component: () => <div>Home</div>
+    })
+    const routeTree = rootRoute.addChildren([indexRoute]);
+    return createRouter({ routeTree });
+  };
+
   beforeEach(() => {
     vi.clearAllMocks()
-    // Default mocks
-    ;(supabase?.auth.getUser as any).mockResolvedValue({ data: { user: null } })
-    ;(supabase?.auth.onAuthStateChange as any).mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } })
-    ;(supabase?.auth.signOut as any).mockResolvedValue({ error: null })
+    if (supabase) {
+        // Default mock for onAuthStateChange
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        vi.mocked(supabase.auth.onAuthStateChange).mockReturnValue({
+            data: { subscription: { unsubscribe: vi.fn() } as unknown as Subscription }
+        } as any)
+    }
   })
 
-  it('renders Sign In button when user is not logged in', async () => {
-    const router = createRouter({ routeTree: RootRoute })
+  it('renders sign in button when user is not logged in', async () => {
+    const router = createMockRouter()
     render(<RouterProvider router={router} />)
 
     await waitFor(() => {
-      expect(screen.getByText('Sign In')).toBeInTheDocument()
+      expect(screen.getByText(/sign in/i)).toBeDefined()
     })
   })
 
-  it('renders user icon and Sign Out button when user is logged in', async () => {
-    (supabase?.auth.getUser as any).mockResolvedValue({ data: { user: { id: '123', email: 'test@test.com' } } })
+  it('renders user avatar and sign out button when logged in', async () => {
+    let authCallback: ((event: AuthChangeEvent, session: Session | null) => void | Promise<void>) | undefined
 
-    let authCallback: any
-    // @ts-expect-error - mock implementation
-    vi.mocked(supabase?.auth.onAuthStateChange).mockImplementation((cb: any) => {
-        authCallback = cb
-        return { data: { subscription: { unsubscribe: vi.fn() } } }
-    })
+    if (supabase) {
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        vi.mocked(supabase.auth.onAuthStateChange).mockImplementation((cb: any) => {
+            authCallback = cb
+            return { data: { subscription: { id: '1', callback: cb, unsubscribe: vi.fn() } as unknown as Subscription } }
+        })
+    }
 
-    const router = createRouter({ routeTree: RootRoute })
+    const router = createMockRouter()
     render(<RouterProvider router={router} />)
 
+    // Wait for effect
     await waitFor(() => {
         expect(authCallback).toBeDefined()
     })
 
-    authCallback('SIGNED_IN', { user: { id: '123', email: 'test@test.com' } })
+    // Simulate login
+    await act(async () => {
+        if (authCallback) {
+            void authCallback('SIGNED_IN', { user: { email: 'test@example.com' } } as any)
+        }
+    })
 
     await waitFor(() => {
-      expect(screen.getByTitle('Sign Out')).toBeInTheDocument()
-    })
-  })
-
-  it('calls signOut when Sign Out button is clicked', async () => {
-    (supabase?.auth.getUser as any).mockResolvedValue({ data: { user: { id: '123' } } })
-    let authCallback: any
-    // @ts-expect-error - mock implementation
-    vi.mocked(supabase?.auth.onAuthStateChange).mockImplementation((cb: any) => {
-        authCallback = cb
-        return { data: { subscription: { unsubscribe: vi.fn() } } }
+      expect(screen.getByTitle(/sign out/i)).toBeDefined()
     })
 
-    const router = createRouter({ routeTree: RootRoute })
-    render(<RouterProvider router={router} />)
-
-    await waitFor(() => {
-        expect(authCallback).toBeDefined()
+    // Click sign out
+    const signOutBtn = screen.getByTitle(/sign out/i)
+    await act(async () => {
+      signOutBtn.click()
     })
 
-    authCallback('SIGNED_IN', { user: { id: '123' } })
-
-    const signOutBtn = await screen.findByTitle('Sign Out')
-    fireEvent.click(signOutBtn)
-
-    expect(supabase?.auth.signOut).toHaveBeenCalled()
+    if (supabase) {
+        expect(supabase.auth.signOut).toHaveBeenCalled()
+    }
   })
 })

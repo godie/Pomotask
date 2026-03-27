@@ -1,31 +1,41 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
-import { Timer, Layers, ListTodo } from 'lucide-react'
+import { Timer, Layers, ListTodo, User as UserIcon, LogOut, Download } from 'lucide-react'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { useTimerStore } from '@/stores/timerStore'
 import { formatTime } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
+import { syncToSupabase } from '@/db/sync'
 import { useEffect, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
+import { Dialog, DialogTrigger } from '@/components/ui/Dialog'
+import { SignInForm } from '@/components/auth/SignInForm'
+import { usePWAInstall } from '@/hooks/usePWAInstall'
+import { NotFound } from '@/components/ui/NotFound'
 
 function RootLayout() {
     const { status, secondsLeft, mode } = useTimerStore()
     const isRunning = status === 'running'
     const [user, setUser] = useState<User | null>(null)
+    const [isSignInOpen, setIsSignInOpen] = useState(false)
+    const { isInstallable, install } = usePWAInstall()
 
     useEffect(() => {
       if (!supabase) return
       void supabase.auth.getUser().then(({ data }) => { setUser(data.user); })
 
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
         setUser(session?.user ?? null)
+        if (event === 'SIGNED_IN') {
+          void syncToSupabase()
+        }
       })
 
       return () => { subscription.unsubscribe(); }
     }, [])
 
-    const handleLogin = () => {
+    const handleSignOut = async () => {
       if (!supabase) return
-      alert("Auth is optional for MVP. Please set env vars to enable Supabase.")
+      await supabase.auth.signOut()
     }
 
     return (
@@ -43,6 +53,17 @@ function RootLayout() {
           </div>
 
           <div className="flex items-center gap-6">
+            {isInstallable && (
+              <button
+                onClick={install}
+                className="hidden sm:flex items-center gap-2 bg-secondary/10 border border-secondary/30 px-3 py-1.5 rounded-full text-secondary hover:bg-secondary/20 transition-all text-xs font-label uppercase tracking-widest"
+                title="Install App"
+              >
+                <Download size={14} />
+                <span>Install</span>
+              </button>
+            )}
+
             {isRunning && (
               <div className="hidden sm:flex items-center gap-3 bg-primary/10 border border-primary/30 px-4 py-1.5 rounded-full animate-pulse shadow-[0_0_10px_rgba(255,45,120,0.2)]">
                 <div className="w-2 h-2 rounded-full bg-primary" />
@@ -53,12 +74,33 @@ function RootLayout() {
             )}
 
             {supabase && (
-              <button
-                onClick={handleLogin}
-                className="text-xs font-label uppercase tracking-widest text-on_surface_variant hover:text-secondary transition-colors"
-              >
-                {user ? 'Profile' : 'Sign In'}
-              </button>
+              <div className="flex items-center gap-4">
+                {user ? (
+                   <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary">
+                        <UserIcon size={16} />
+                      </div>
+                      <button
+                        onClick={handleSignOut}
+                        className="text-on_surface_variant hover:text-error transition-colors"
+                        title="Sign Out"
+                      >
+                        <LogOut size={18} />
+                      </button>
+                   </div>
+                ) : (
+                  <Dialog open={isSignInOpen} onOpenChange={setIsSignInOpen}>
+                    <DialogTrigger asChild>
+                      <button
+                        className="text-xs font-label uppercase tracking-widest text-on_surface_variant hover:text-secondary transition-colors"
+                      >
+                        Sign In
+                      </button>
+                    </DialogTrigger>
+                    <SignInForm onSuccess={() => { setIsSignInOpen(false) }} />
+                  </Dialog>
+                )}
+              </div>
             )}
           </div>
         </nav>
@@ -98,4 +140,5 @@ function RootLayout() {
 
 export const Route = createRootRoute({
   component: RootLayout,
+  notFoundComponent: NotFound,
 })
