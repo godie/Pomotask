@@ -1,7 +1,7 @@
 # 🗺️ Roadmap & Agent Tasks — Pomotask
 
 > This file is the source of truth for the AI agent implementing the project.
-> Work tasks IN ORDER. Mark each task as `[x]` when complete before moving to the next.
+> Work tasks IN ORDER. Mark each task as `[x]` when complete before moving on to the next.
 > Read `SPECS.md` and `MVP_SCOPE.md` before starting. Connect to Stitch MCP for design tokens before any UI work.
 
 ---
@@ -144,8 +144,8 @@
   - 🔴 `'renders mini-timer bar when timer is running'`
   - 🟢 Implement layout
 - [x] **4.2** Create placeholder route files (index, projects, tasks) — no logic yet, just renders heading
-- [ ] **4.3** 🔴🟢 Test: `'navigating to /projects renders ProjectsList'`
-- [ ] **4.4** 🔴🟢 Test: `'navigating to unknown route renders 404'`
+- [x] **4.3** 🔴🟢 Test: `'navigating to /projects renders ProjectsList'`
+- [x] **4.4** 🔴🟢 Test: `'navigating to unknown route renders 404'`
 - [x] **4.5** Add `<RouterProvider>` in `src/App.tsx`
 
 > ⚠️ Connect to Stitch MCP before implementing layout — get exact nav design, colors, spacing.
@@ -177,7 +177,7 @@
   - 🟢 Implement `TaskSelector.tsx` (extracted from index.tsx)
 
 - [x] **5.5** Wire `src/routes/index.tsx` — compose all timer components
-- [ ] **5.6** Browser notification on session end (test: `'requests notification permission on first start'`)
+- [x] **5.6** Browser notification on session end (test: `'requests notification permission on first start'`)
 - [x] **5.7** Audio beep on session end (mocked in setup.ts — test: `'plays sound on session complete'`)
 
 **Commit**: `feat: Pomodoro timer UI and controls (TDD)`
@@ -202,7 +202,7 @@
   - 🟢 Implement stats
 
 - [x] **6.4** 🔴🟢 Projects list page — `'shows empty state when no projects'` / `'renders project cards'`
-- [ ] **6.5** 🔴🟢 Project detail page — `'shows project tasks'` / `'shows project stats'`
+- [x] **6.5** 🔴🟢 Project detail page — `'shows project tasks'` / `'shows project stats'`
 
 **Commit**: `feat: projects list and detail UI (TDD)`
 
@@ -238,12 +238,12 @@
 ## Phase 8 — Optional Auth
 
 - [x] **8.1** Create `src/lib/supabase.ts` — lazy Supabase client (only init if env vars present)
-- [ ] **8.2** Create Supabase tables (migration SQL) mirroring TypeScript types
-- [ ] **8.3** Add RLS policies: `user_id = auth.uid()` on all tables
-- [ ] **8.4** Create sign-in UI (email magic link or Google OAuth)
-- [ ] **8.5** On sign-in: sync local IndexedDB data up to Supabase
+- [x] **8.2** Create Supabase tables (migration SQL) mirroring TypeScript types
+- [x] **8.3** Add RLS policies: `user_id = auth.uid()` on all tables
+- [x] **8.4** Create sign-in UI (email magic link or Google OAuth)
+- [x] **8.5** On sign-in: sync local IndexedDB data up to Supabase
 - [x] **8.6** Implement `src/db/sync.ts` dual-write logic
-- [ ] **8.7** Add user avatar / sign-out in nav bar when logged in
+- [x] **8.7** Add user avatar / sign-out in nav bar when logged in
 
 **Commit**: `feat: optional Supabase auth and sync`
 
@@ -255,11 +255,11 @@
   ```bash
   pnpm add -D vite-plugin-pwa
   ```
-- [ ] **9.2** Configure asset caching (app shell)
-- [ ] **9.3** Add install prompt for mobile (PWA `beforeinstallprompt`)
-- [ ] **9.4** Generate app icons (192px and 512px) based on Stitch design
-- [ ] **9.5** Test on Chrome mobile (device emulation minimum)
-- [ ] **9.6** Verify all routes work with direct navigation (no 404 on refresh)
+- [x] **9.2** Configure asset caching (app shell)
+- [x] **9.3** Add install prompt for mobile (PWA `beforeinstallprompt`)
+- [x] **9.4** Generate app icons (192px and 512px) based on Stitch design
+- [x] **9.5** Test on Chrome mobile (device emulation minimum)
+- [x] **9.6** Verify all routes work with direct navigation (no 404 on refresh)
 - [x] **9.7** Add loading skeletons to all async components
 - [x] **9.8** Add error boundary with friendly fallback UI
 
@@ -271,8 +271,8 @@
 
 - [x] **10.1** Connect repo to Cloudflare Pages (or keep GitHub Actions deploy from `.github/workflows/ci.yml`)
 - [x] **10.2** Add env vars in Cloudflare (and GitHub Actions secrets for CI): Supabase keys, `CLOUDFLARE_*`
-- [ ] **10.3** Configure SPA fallback (`/* → index.html`)
-- [ ] **10.4** Deploy and smoke test production build
+- [x] **10.3** Configure SPA fallback (`/* → index.html`)
+- [x] **10.4** Deploy and smoke test production build
 - [x] **10.5** Update `README.md` with live URL
 
 **Commit**: `chore: deploy to cloudflare pages`
@@ -287,12 +287,12 @@
 | 1     | Database Layer                                      | ✅     |
 | 2     | Timer Store                                         | ✅     |
 | 3     | Query Hooks                                         | ✅     |
-| 4     | Routing & Layout                                    | 🟡     |
+| 4     | Routing & Layout                                    | ✅     |
 | 5     | Timer UI                                            | ✅     |
-| 6     | Projects UI                                         | 🟡     |
+| 6     | Projects UI                                         | ✅     |
 | 7     | Tasks UI                                            | ✅     |
-| 8     | Auth (optional)                                     | 🟡     |
-| 9     | PWA & Polish                                        | 🟡     |
-| 10    | Deploy (Cloudflare Pages; see `docs/CICD_SETUP.md`) | ⬜     |
+| 8     | Auth (optional)                                     | ✅     |
+| 9     | PWA & Polish                                        | ✅     |
+| 10    | Deploy (Cloudflare Pages; see `docs/CICD_SETUP.md`) | ✅     |
 
 Update status: ⬜ Not started → 🟡 In progress → ✅ Done
