@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Convex types
+        run: npx convex codegen
+
       - name: TypeScript type check
         run: pnpm typecheck
 
@@ -54,6 +57,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Generate Convex types
+        run: npx convex codegen
 
       - name: Run tests
         run: pnpm test:run
@@ -85,6 +91,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Generate Convex types
+        run: npx convex codegen
 
       - name: Build
         run: pnpm build
