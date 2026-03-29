@@ -25,6 +25,7 @@
     "@tanstack/router-devtools": "^1.166.10",
     "@tanstack/zod-form-adapter": "^0.42.1",
     "clsx": "^2.1.1",
+    "convex": "^1.34.1",
     "dexie": "^4.0.8",
     "dexie-react-hooks": "^1.1.7",
     "lucide-react": "latest",

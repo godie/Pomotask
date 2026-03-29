@@ -200,3 +200,9 @@ Leerlo antes de empezar cualquier tarea.
 Actualizarlo solo cuando se descubra algo no obvio o inesperado.
 No duplicar información que ya está en este documento.
 No duplicar información que ya está en convex-contexto.md.
+
+### 2.6 Archivos ignorados
+
+`convex/_generated/` debe estar en `.gitignore`.
+Se regenera automáticamente con `npx convex dev` o `npx convex codegen`.
+Nunca commitear archivos generados.
