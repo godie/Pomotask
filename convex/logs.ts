@@ -1,8 +1,9 @@
-import { query, type QueryCtx } from "./_generated/server";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { query } from "./_generated/server";
 
 export const placeholderQuery = query({
   args: {},
-  handler: (_ctx: QueryCtx) => {
+  handler: (ctx) => {
     return null;
   },
 });

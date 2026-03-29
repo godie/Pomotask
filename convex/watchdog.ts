@@ -1,8 +1,9 @@
-import { internalMutation, type MutationCtx } from "./_generated/server";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { internalMutation } from "./_generated/server";
 
 export const resetStuckTasks = internalMutation({
   args: {},
-  handler: (_ctx: MutationCtx) => {
+  handler: (ctx) => {
     // Placeholder logic
   },
 });
