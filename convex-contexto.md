@@ -192,3 +192,11 @@ Al finalizar la integración:
 - `.env.example` debe estar actualizado.
 - No debe romperse el deploy actual.
 - No debe cambiar la estructura del repo.
+
+## 10. Journal del agente
+
+Existe un archivo `.jules/convex.md` con aprendizajes críticos de integraciones anteriores.
+Leerlo antes de empezar cualquier tarea.
+Actualizarlo solo cuando se descubra algo no obvio o inesperado.
+No duplicar información que ya está en este documento.
+No duplicar información que ya está en convex-contexto.md.

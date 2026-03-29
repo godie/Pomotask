@@ -93,3 +93,37 @@
 
 - Actualizar contexto-convex.md si algo cambió.
 - Actualizar .env.example con todas las variables necesarias.
+
+## Tarea 12: Crear journal del agente
+
+- Crear carpeta `.jules/` en la raíz del repo si no existe.
+- Crear archivo `.jules/convex.md` con este contenido inicial:
+
+      # Convex Agent Journal
+
+      Este archivo documenta SOLO aprendizajes críticos descubiertos durante
+      la integración de Convex en Pomotask. No es un log de actividad.
+
+      ## Cuándo agregar una entrada
+
+      Solo cuando descubras:
+      - Un comportamiento inesperado de Convex específico a este repo
+      - Un fix que tuvo efectos secundarios no obvios
+      - Un patrón reutilizable para este proyecto
+      - Una restricción importante que no está en el contexto
+
+      ## Cuándo NO agregar una entrada
+
+      - Tareas completadas sin problemas
+      - Buenas prácticas genéricas
+      - Información ya documentada en contexto-convex.md
+
+      ## Formato
+
+      ## YYYY-MM-DD - [Título corto]
+      **Problema:** [Qué encontraste]
+      **Aprendizaje:** [Por qué existía o por qué no era obvio]
+      **Prevención:** [Cómo evitarlo la próxima vez]
+
+- Agregar `.jules/` al `.gitignore` NO — este archivo debe commitearse.
+- No crear entradas todavía. El agente las crea cuando las necesite.
