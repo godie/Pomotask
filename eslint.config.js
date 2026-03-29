@@ -14,6 +14,7 @@ export default tseslint.config(
       'vitest.config.ts',
       'commitlint.config.js',
       'eslint.config.js',
+      'convex/_generated/**',
     ],
   },
   {

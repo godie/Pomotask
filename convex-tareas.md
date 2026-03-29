@@ -19,7 +19,7 @@
   export default { providers: [] };
 - No implementar autenticación.
 
-## Tarea 4: Crear archivos de dominio (vacíos inicialmente)
+## [x] Tarea 4: Crear archivos de dominio (vacíos inicialmente)
 
 - Crear:
   - convex/tasks.ts
