@@ -12,7 +12,7 @@ export const createTask = mutation({
     description: v.optional(v.string()),
     type: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx: any, args: any) => {
     const project = await ctx.db.get(args.projectId);
     if (!project) throw new Error("Project not found");
 
@@ -49,13 +49,13 @@ export const claimTask = mutation({
     agentId: v.id("agents"),
     type: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx: any, args: any) => {
     const task = await ctx.db
       .query("tasks")
-      .withIndex("by_status_type", (q) =>
+      .withIndex("by_status_type", (q: any) =>
         q.eq("status", "pending").eq("type", args.type)
       )
-      .filter((q) => q.eq(q.field("waitingForClarification"), false))
+      .filter((q: any) => q.eq(q.field("waitingForClarification"), false))
       .first();
 
     if (!task) return null;
@@ -77,7 +77,7 @@ export const reportProgress = mutation({
     message: v.string(),
     level: v.union(v.literal("info"), v.literal("warn"), v.literal("error")),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx: any, args: any) => {
     await ctx.db.insert("taskLogs", {
       taskId: args.taskId,
       agentId: args.agentId,
@@ -97,7 +97,7 @@ export const completeTask = mutation({
     resultType: v.optional(v.string()),
     resultPayload: v.optional(v.string()),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx: any, args: any) => {
     const task = await ctx.db.get(args.taskId);
     if (!task) throw new Error("Task not found");
     if (task.claimedBy !== args.agentId) {
@@ -129,7 +129,7 @@ export const failTask = mutation({
     agentId: v.id("agents"),
     reason: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx: any, args: any) => {
     const task = await ctx.db.get(args.taskId);
     if (!task) throw new Error("Task not found");
     if (task.claimedBy !== args.agentId) {
@@ -158,27 +158,27 @@ export const failTask = mutation({
 
 export const listByProject = query({
   args: { projectId: v.id("projects") },
-  handler: async (ctx, args) => {
+  handler: async (ctx: any, args: any) => {
     return await ctx.db
       .query("tasks")
-      .filter((q) => q.eq(q.field("projectId"), args.projectId))
+      .filter((q: any) => q.eq(q.field("projectId"), args.projectId))
       .collect();
   },
 });
 
 export const listByStatus = query({
   args: { status: v.string() },
-  handler: async (ctx, args) => {
+  handler: async (ctx: any, args: any) => {
     return await ctx.db
       .query("tasks")
-      .filter((q) => q.eq(q.field("status"), args.status))
+      .filter((q: any) => q.eq(q.field("status"), args.status))
       .collect();
   },
 });
 
 export const getTask = query({
   args: { taskId: v.id("tasks") },
-  handler: async (ctx, args) => {
+  handler: async (ctx: any, args: any) => {
     return await ctx.db.get(args.taskId);
   },
 });
