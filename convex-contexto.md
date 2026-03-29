@@ -64,15 +64,16 @@ Ejecutar `npx convex codegen` después de cualquier cambio en `schema.ts`.
 
 ### 2.4 Variables de entorno
 
-El frontend necesita:
+El frontend necesita (en GitHub Actions como variable de entorno):
 
     VITE_CONVEX_URL=https://<tu-deployment>.convex.cloud
 
-El deploy de Cloudflare Pages necesita en GitHub Secrets:
+GitHub Secrets necesita:
 
     CONVEX_DEPLOY_KEY=<deploy key del Convex dashboard>
+    CONVEX_DEPLOYMENT=<deployment name, ej: happy-animal-123>
 
-Ambas variables deben estar documentadas en `.env.example`.
+Estas variables deben estar documentadas en `.env.example`.
 No hardcodear URLs ni keys en el código.
 
 ### 2.5 Gestor de paquetes

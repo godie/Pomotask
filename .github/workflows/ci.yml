@@ -32,6 +32,9 @@ jobs:
 
       - name: Generate Convex types
         run: npx convex codegen
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+          CONVEX_DEPLOYMENT: ${{ secrets.CONVEX_DEPLOYMENT }}
 
       - name: TypeScript type check
         run: pnpm typecheck
@@ -60,6 +63,9 @@ jobs:
 
       - name: Generate Convex types
         run: npx convex codegen
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+          CONVEX_DEPLOYMENT: ${{ secrets.CONVEX_DEPLOYMENT }}
 
       - name: Run tests
         run: pnpm test:run
@@ -94,12 +100,16 @@ jobs:
 
       - name: Generate Convex types
         run: npx convex codegen
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+          CONVEX_DEPLOYMENT: ${{ secrets.CONVEX_DEPLOYMENT }}
 
       - name: Build
         run: pnpm build
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_CONVEX_URL: ${{ vars.VITE_CONVEX_URL }}
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
