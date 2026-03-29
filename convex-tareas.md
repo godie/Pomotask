@@ -1,4 +1,4 @@
-## Tarea 1: Instalar Convex
+## [x] Tarea 1: Instalar Convex
 
 - Usar pnpm (repo tiene pnpm-lock.yaml).
 - Ejecutar: pnpm add convex
@@ -7,7 +7,7 @@
 - Verificar que se crea convex/\_generated/
 - NO modificar archivos en convex/\_generated/
 
-## Tarea 2: Crear schema.ts
+## [x] Tarea 2: Crear schema.ts
 
 - Crear convex/schema.ts con el schema acordado.
 - Incluir tablas: users, projects, agents, tasks, taskLogs, taskComments.
