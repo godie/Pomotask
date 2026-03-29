@@ -12,7 +12,7 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Skeleton } from "@/components/ui/Skeleton";
 
-function ProjectsPage() {
+export function ProjectsPage() {
   const { data: projects, isLoading: projectsLoading } = useProjects();
   const { data: tasks, isLoading: tasksLoading } = useAllTasks();
   const { mutateAsync: createProject } = useCreateProject();

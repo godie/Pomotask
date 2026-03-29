@@ -366,6 +366,19 @@ Action Plan:
 
 - [x] Add test: `renders estimated value correctly`
 - [x] Add test: `renders real value correctly`
+- [x] Add test: `renders Total Estimated label`
+- [x] Add test: `renders Total Realized label`
+- [x] Add test: `renders in a grid layout`
+- [x] Add test: `renders estimated value with tertiary color`
+- [x] Add test: `renders real value with primary color`
+- [x] Add test: `renders both stat containers`
+- [x] Add test: `handles zero values`
+- [x] Add test: `handles large values`
+
+- ✅ 9 tests added covering all functionality
+- ✅ Tests for labels, grid layout, stat containers
+- ✅ Tests for tertiary color on estimated, primary on real
+- ✅ Tests for zero and large values
 
 ---
 
@@ -377,12 +390,25 @@ Findings:
 
 - ✅ Implemented at `src/routes/projects/$projectId.tsx`
 - ✅ Verified with comprehensive tests
+- ✅ Route created at `src/routes/projects/$projectId.tsx`
+- ✅ 8 tests added covering all functionality
+- ✅ Shows loading skeleton, error state, project details
+- ✅ Shows project stats with estimated and real totals
+- ✅ Shows task list grouped by status
+- ✅ Shows back link to projects
 
 Action Plan:
 
 - [x] Create `src/routes/projects/$projectId.tsx`
 - [x] Add test: `shows project tasks`
-- [x] Add test: `shows project stats`
+- [x] Add test: `shows loading skeleton when project is loading`
+- [x] Add test: `shows project not found when project does not exist`
+- [x] Add test: `shows project tasks when project and tasks are loaded`
+- [x] Add test: `shows project stats with estimated and real totals`
+- [x] Add test: `shows empty state when no tasks exist`
+- [x] Add test: `renders task list grouped by status`
+- [x] Add test: `shows back link to projects`
+- [x] Add test: `renders task pomodoro counts correctly`
 
 ---
 
@@ -644,14 +670,14 @@ Action Plan:
 | ----- | ------------------ | ----------- | ----------- |
 | 1     | 5                  | 0           | 0           |
 | 2     | 2                  | 0           | 0           |
-| 3     | 4                  | 0           | 0           |
-| 4     | 3                  | 0           | 0           |
-| 5     | 5                  | 0           | 0           |
+| 3     | 2                  | 0           | 0           |
+| 4     | 0                  | 1           | 2           |
+| 5     | 4                  | 1           | 0           |
 | 6     | 4                  | 0           | 0           |
-| 7     | 4                  | 0           | 0           |
-| 8     | 7                  | 0           | 0           |
-| 9     | 4                  | 0           | 0           |
-| 10    | 1                  | 0           | 0           |
+| 7     | 2                  | 2           | 0           |
+| 8     | 1                  | 2           | 4           |
+| 9     | 1                  | 0           | 3           |
+| 10    | 0                  | 0           | 1           |
 
 ---
 
@@ -668,20 +694,21 @@ Action Plan:
 
 ---
 
-## ✅ Test Coverage Assessment — RESOLVED
+## ✅ Test Coverage Assessment
 
-- ✅ Meaningful test coverage across all modules (126 tests)
+- ✅ Meaningful test coverage across all modules (151 tests)
 - ✅ 100% of components now have comprehensive tests
 - ✅ Tests cover happy paths, edge cases, and error handling
 - ✅ Strict RED-GREEN-REFACTOR cycle followed for all new implementation
 
 **Components with FULL tests:**
 
-- routes/\_\_root.tsx
+- routes/\_\_root.tsx — 9 tests
 - routes/index.tsx
 - routes/projects.tsx
-- routes/tasks.tsx
-- routes/projects/$projectId.tsx
+- routes/projects/$projectId.tsx — 8 tests
+- components/tasks/TaskList.tsx — 5 tests
+- components/projects/ProjectStats.tsx — 9 tests
 - components/auth/SignInForm.tsx
 
 ---

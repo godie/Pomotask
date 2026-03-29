@@ -9,10 +9,11 @@ import { useState } from "react";
 import { Dialog, DialogTrigger } from "@/components/ui/Dialog";
 import { TaskForm } from "@/components/tasks/TaskForm";
 import { useCreateTask } from "@/hooks/useTasks";
-
-function ProjectDetailPage() {
-  const { projectId } = Route.useParams();
-  const { data: project, isLoading: projectLoading } = useProject(projectId);
+export function ProjectDetailPage({ projectId }: { projectId: string }) {
+  const {
+    data: project,
+    isLoading: projectLoading,
+  } = useProject(projectId);
   const { data: tasks, isLoading: tasksLoading } = useTasksByProject(projectId);
   const { mutateAsync: deleteTask } = useDeleteTask();
   const { mutateAsync: updateTask } = useUpdateTask();
@@ -121,5 +122,8 @@ function ProjectDetailPage() {
 }
 
 export const Route = createFileRoute("/projects/$projectId")({
-  component: ProjectDetailPage,
+  component: function ProjectDetailRoute() {
+    const { projectId } = Route.useParams();
+    return <ProjectDetailPage projectId={projectId} />;
+  },
 });

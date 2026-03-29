@@ -9,6 +9,7 @@ export default mergeConfig(
     test: {
       environment: 'jsdom',
       globals: true,
+      watch: false,
       setupFiles: ['./src/tests/setup.ts'],
       coverage: {
         provider: 'v8',
