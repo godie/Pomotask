@@ -66,7 +66,7 @@
   - Resetear a pending o marcar failed si retryCount >= maxRetries.
 - En convex/crons.ts: registrar resetStuckTasks cada 10 minutos.
 
-## Tarea 8: Integrar Convex en el frontend
+## [x] Tarea 8: Integrar Convex en el frontend
 
 - Crear src/lib/convex.ts:
   import { ConvexReactClient } from "convex/react";
