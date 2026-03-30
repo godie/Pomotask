@@ -30,7 +30,7 @@
   - convex/crons.ts
 - No crear subcarpetas. Un archivo por dominio.
 
-## Tarea 5: Implementar mutations en tasks.ts
+## [x] Tarea 5: Implementar mutations en tasks.ts
 
 - Implementar:
   - createTask: inserta task con status "pending", retryCount: 0.

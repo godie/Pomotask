@@ -8,14 +8,14 @@ export default defineSchema({
   }),
 
   projects: defineTable({
-    ownerUserId: v.string(), // ID from users table (as string for simplicity/flexibility)
+    ownerUserId: v.id("users"),
     name: v.string(),
     description: v.optional(v.string()),
     baseBranch: v.optional(v.string()),
   }),
 
   agents: defineTable({
-    ownerUserId: v.string(),
+    ownerUserId: v.id("users"),
     name: v.string(),
     type: v.string(),
     status: v.string(),
@@ -24,15 +24,15 @@ export default defineSchema({
   }),
 
   tasks: defineTable({
-    projectId: v.string(),
-    ownerUserId: v.string(),
+    projectId: v.id("projects"),
+    ownerUserId: v.id("users"),
     title: v.string(),
     description: v.optional(v.string()),
     type: v.string(),
     status: v.string(), // "pending", "in_progress", "completed", "failed"
-    createdBy: v.string(),
-    claimedBy: v.optional(v.string()),
-    parentTaskId: v.optional(v.string()),
+    createdBy: v.id("users"),
+    claimedBy: v.optional(v.id("agents")),
+    parentTaskId: v.optional(v.id("tasks")),
     branchName: v.optional(v.string()),
     baseBranch: v.optional(v.string()),
     prUrl: v.optional(v.string()),
@@ -48,20 +48,20 @@ export default defineSchema({
   }).index("by_status_type", ["status", "type"]),
 
   taskLogs: defineTable({
-    taskId: v.string(),
-    agentId: v.string(),
+    taskId: v.id("tasks"),
+    agentId: v.id("agents"),
     timestamp: v.number(),
     level: v.string(), // "info", "warn", "error", etc.
     message: v.string(),
   }).index("by_task", ["taskId"]),
 
   taskComments: defineTable({
-    taskId: v.string(),
-    authorId: v.string(),
+    taskId: v.id("tasks"),
+    authorId: v.string(), // Can be user ID or agent ID, so v.string() or we could use v.union but v.string() is fine for now as it's mixed
     authorType: v.string(), // "user" or "agent"
     type: v.string(),
     message: v.string(),
-    parentCommentId: v.optional(v.string()),
+    parentCommentId: v.optional(v.id("taskComments")),
     resolvedAt: v.optional(v.number()),
     createdAt: v.number(),
   }).index("by_task", ["taskId"]),
