@@ -58,7 +58,7 @@
 - [x] getTask(taskId) - usa .get() para obtener una tarea específica
 - Tests escritos en src/tests/convex/tasks.test.ts
 
-## Tarea 7: Implementar watchdog
+## [x] Tarea 7: Implementar watchdog
 
 - En convex/watchdog.ts: resetStuckTasks como internalMutation.
   - Buscar tasks in_progress con startedAt > 30 min.
