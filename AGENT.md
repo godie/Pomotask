@@ -124,11 +124,16 @@ it('shows break overlay when timer is in break mode', () => {
 ## Key rules
 
 - **TDD is mandatory** — test first, always, no exceptions
+- **NO TYPE `any` ALLOWED** — The linter is configured to block it as an error. Use:
+  - Explicit types (e.g., `string`, `number`, `MyInterface`)
+  - `unknown` for truly unknown values
+  - Generics (e.g., `Array<T>`, `Promise<Response>`)
+  - Compiler-inferred types when appropriate
+  - ❌ **NEVER** use `any` — it will fail CI
 - Do not add features not listed in `MVP_SCOPE.md`
 - Do not use any library not listed in `SPECS.md` without noting it
 - All data must persist in IndexedDB (Dexie) — this is offline-first
 - Auth is optional — the app must work 100% without it
-- TypeScript strict mode — no `any`
 - Mobile-first responsive design
 - Never commit failing tests
 
@@ -192,15 +197,16 @@ The current setup (`lint-staged.config.mjs`):
 
 ```javascript
 export default {
-  '*.{ts,tsx}': [
-    'eslint --max-warnings 0 --fix --no-warn-ignored',
-    'bash -c \'tsc --noEmit\'',
+  "*.{ts,tsx}": [
+    "eslint --max-warnings 0 --fix --no-warn-ignored",
+    "bash -c 'tsc --noEmit'",
   ],
-  '*.{json,md,yml,yaml}': ['prettier --write'],
-}
+  "*.{json,md,yml,yaml}": ["prettier --write"],
+};
 ```
 
 This means:
+
 - For `.ts`/`.tsx` files: ESLint (with fixes) + TypeScript check
 - For `.json`/`.md`/`.yml`/`.yaml`: Prettier formatting
 

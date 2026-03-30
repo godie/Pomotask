@@ -51,11 +51,12 @@
   - No usar any.
   - No usar .collect() en queries.
 
-## Tarea 6: Implementar queries en tasks.ts
+## [x] Tarea 6: Implementar queries en tasks.ts
 
-- listByProject(projectId)
-- listByStatus(status)
-- getTask(taskId)
+- [x] listByProject(projectId) - filtros por projectId, usa .take(100)
+- [x] listByStatus(status) - filtros por status, usa .take(100)
+- [x] getTask(taskId) - usa .get() para obtener una tarea específica
+- Tests escritos en src/tests/convex/tasks.test.ts
 
 ## Tarea 7: Implementar watchdog
 
