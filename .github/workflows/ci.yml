@@ -78,7 +78,7 @@ jobs:
           path: coverage/
           retention-days: 7
 
-  # ─── 3. BUILD ────────────────────────────────────────────────────
+  # ─── 3. BUILD + DEPLOY CONVEX ────────────────────────────────────
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -98,17 +98,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Convex types
-        run: npx convex codegen
+      - name: Deploy Convex backend
+        run: npx convex deploy --cmd 'pnpm build'
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
-          CONVEX_DEPLOYMENT: ${{ secrets.CONVEX_DEPLOYMENT }}
-
-      - name: Build
-        run: pnpm build
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          SITE_URL: ${{ vars.SITE_URL }}
           VITE_CONVEX_URL: ${{ vars.VITE_CONVEX_URL }}
 
       - name: Upload build artifact
@@ -131,7 +126,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Wrangler installs via the repo’s package manager (pnpm-lock.yaml → pnpm must exist)
       - uses: pnpm/action-setup@v3
         with:
           version: ${{ env.PNPM_VERSION }}
