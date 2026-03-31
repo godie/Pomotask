@@ -99,7 +99,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Deploy Convex backend
-        run: npx convex deploy --cmd 'pnpm build'
+        run: npx convex deploy --cmd 'npx convex codegen && pnpm build'
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
