@@ -4,9 +4,10 @@ import {
   useCreateProject,
   useDeleteProject,
 } from "@/hooks/useProjects";
-import { useAllTasks } from "@/hooks/useTasks";
+import { useAllTasks, useCreateTask } from "@/hooks/useTasks";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { ProjectForm } from "@/components/projects/ProjectForm";
+import { TaskForm } from "@/components/tasks/TaskForm";
 import { Dialog, DialogTrigger } from "@/components/ui/Dialog";
 import { useState } from "react";
 import { Plus } from "lucide-react";
@@ -17,7 +18,12 @@ export function ProjectsPage() {
   const { data: tasks, isLoading: tasksLoading } = useAllTasks();
   const { mutateAsync: createProject } = useCreateProject();
   const { mutateAsync: deleteProject } = useDeleteProject();
+  const { mutateAsync: createTask } = useCreateTask();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
+    null,
+  );
 
   if (projectsLoading || tasksLoading)
     return (
@@ -30,6 +36,11 @@ export function ProjectsPage() {
         ))}
       </div>
     );
+
+  const handleAddTask = (projectId: string) => {
+    setSelectedProjectId(projectId);
+    setIsTaskFormOpen(true);
+  };
 
   return (
     <div className="animate-in fade-in duration-500">
@@ -62,6 +73,25 @@ export function ProjectsPage() {
         </Dialog>
       </div>
 
+      <Dialog open={isTaskFormOpen} onOpenChange={setIsTaskFormOpen}>
+        <TaskForm
+          title="Add Task"
+          initialData={{
+            name: "",
+            projectId: selectedProjectId,
+            estimatedPomodoros: 1,
+          }}
+          onSubmit={async (data) => {
+            const task = await createTask(data);
+            setIsTaskFormOpen(false);
+            return task;
+          }}
+          onCancel={() => {
+            setIsTaskFormOpen(false);
+          }}
+        />
+      </Dialog>
+
       {projects?.length === 0 ? (
         <div className="text-center py-20 border-2 border-dashed border-outline/10 rounded-3xl bg-surface_container/30">
           <h3 className="text-xl font-headline font-bold mb-2">
@@ -90,6 +120,7 @@ export function ProjectsPage() {
                 project={project}
                 onDelete={deleteProject}
                 onEdit={() => {}}
+                onAddTask={handleAddTask}
                 taskCount={projectTasks.length}
               />
             );

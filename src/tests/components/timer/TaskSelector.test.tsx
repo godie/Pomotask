@@ -21,68 +21,137 @@ const mockTasks: Task[] = [
     estimatedPomodoros: 3,
     realPomodoros: 1,
     status: "pending",
-    createdAt: 1000,
-    updatedAt: 1000,
+    createdAt: 2000,
+    updatedAt: 2000,
+  },
+  {
+    id: "3",
+    name: "Task 3",
+    projectId: null,
+    estimatedPomodoros: 1,
+    realPomodoros: 1,
+    status: "completed",
+    createdAt: 3000,
+    updatedAt: 3000,
+    completedAt: 4000,
   },
 ];
 
 describe("TaskSelector", () => {
-  it("shows list of pending tasks when changing task", () => {
-    const setActiveTask = vi.fn();
+  it("shows header with Tasks title", () => {
     render(
       <TaskSelector
         tasks={mockTasks}
         activeTaskId={null}
-        setActiveTask={setActiveTask}
-      />
+        setActiveTask={vi.fn()}
+        onToggleComplete={vi.fn()}
+        onCreateTask={vi.fn()}
+      />,
     );
 
-    const changeButton = screen.getByText(/Change Task/i);
-    fireEvent.click(changeButton);
-
-    expect(screen.getByText("Task 1")).toBeInTheDocument();
-    expect(screen.getByText("Task 2")).toBeInTheDocument();
+    expect(screen.getByText("Tasks")).toBeInTheDocument();
   });
 
-  it("selecting task calls setActiveTask", () => {
-    const setActiveTask = vi.fn();
+  it("shows + New button in header", () => {
     render(
       <TaskSelector
         tasks={mockTasks}
         activeTaskId={null}
-        setActiveTask={setActiveTask}
-      />
+        setActiveTask={vi.fn()}
+        onToggleComplete={vi.fn()}
+        onCreateTask={vi.fn()}
+      />,
     );
 
-    fireEvent.click(screen.getByText(/Change Task/i));
-    fireEvent.click(screen.getByText("Task 1"));
-
-    expect(setActiveTask).toHaveBeenCalledWith("1");
+    expect(screen.getByRole("button", { name: /new/i })).toBeInTheDocument();
   });
 
-  it("shows active task name when set", () => {
+  it("calls onCreateTask when + New button is clicked", () => {
+    const onCreateTask = vi.fn();
+    render(
+      <TaskSelector
+        tasks={mockTasks}
+        activeTaskId={null}
+        setActiveTask={vi.fn()}
+        onToggleComplete={vi.fn()}
+        onCreateTask={onCreateTask}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /new/i }));
+
+    expect(onCreateTask).toHaveBeenCalled();
+  });
+
+  it("shows active task name and pomodoros", () => {
     render(
       <TaskSelector
         tasks={mockTasks}
         activeTaskId="1"
         setActiveTask={vi.fn()}
-      />
+        onToggleComplete={vi.fn()}
+        onCreateTask={vi.fn()}
+      />,
     );
 
     expect(screen.getByText("Task 1")).toBeInTheDocument();
     expect(screen.getByText("0 / 2 Pomodoros")).toBeInTheDocument();
   });
 
-  it("shows empty state when no pending tasks found", () => {
+  it("shows placeholder when no active task", () => {
+    render(
+      <TaskSelector
+        tasks={mockTasks}
+        activeTaskId={null}
+        setActiveTask={vi.fn()}
+        onToggleComplete={vi.fn()}
+        onCreateTask={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/select a task/i)).toBeInTheDocument();
+  });
+
+  it("shows clickable placeholder to open task selector", () => {
+    render(
+      <TaskSelector
+        tasks={mockTasks}
+        activeTaskId={null}
+        setActiveTask={vi.fn()}
+        onToggleComplete={vi.fn()}
+        onCreateTask={vi.fn()}
+      />,
+    );
+
+    const placeholder = screen.getByText(/select a task/i);
+    expect(placeholder.closest("button")).toBeInTheDocument();
+  });
+
+  it("renders without crashing with empty tasks", () => {
     render(
       <TaskSelector
         tasks={[]}
         activeTaskId={null}
         setActiveTask={vi.fn()}
-      />
+        onToggleComplete={vi.fn()}
+        onCreateTask={vi.fn()}
+      />,
     );
 
-    fireEvent.click(screen.getByText(/Change Task/i));
-    expect(screen.getByText(/No pending tasks found/i)).toBeInTheDocument();
+    expect(screen.getByText("Tasks")).toBeInTheDocument();
+  });
+
+  it("renders without crashing with undefined tasks", () => {
+    render(
+      <TaskSelector
+        tasks={undefined}
+        activeTaskId={null}
+        setActiveTask={vi.fn()}
+        onToggleComplete={vi.fn()}
+        onCreateTask={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Tasks")).toBeInTheDocument();
   });
 });
