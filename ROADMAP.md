@@ -238,9 +238,9 @@
 ## Phase 8 — Cloud Sync (Convex)
 
 - [x] **8.1** Create `src/lib/convex.ts` — Convex client initialization
-- [x] **8.2** Create Convex schema (`convex/schema.ts`) mirroring TypeScript types
-- [x] **8.3** Implement Convex mutations and queries for projects and tasks
-- [ ] **8.4** Implement Convex Auth (planned for future phase)
+- [x] **8.2** Create Convex schema (`convex/schema.ts`) with auth tables
+- [ ] **8.3** Implement Convex mutations and queries for projects and tasks (backend sync)
+- [ ] **8.4** Implement Convex Auth (see `docs/convex-auth-tareas.md`)
 - [ ] **8.5** Implement sync logic between IndexedDB and Convex
 - [ ] **8.6** Implement Convex watchdog and crons
 - [ ] **8.7** Integrate ConvexProvider in frontend
@@ -276,6 +276,18 @@
 - [x] **10.5** Update `README.md` with live URL
 
 **Commit**: `chore: deploy to cloudflare pages`
+
+---
+
+## 🔧 Bug Fixes & Improvements
+
+### Fixed (2026-03-31)
+
+- **ProjectCard navigation**: Added `Link` to navigate to project detail page (was broken)
+- **ProjectForm edit mode**: Wired up edit functionality via `useUpdateProject` hook
+- **TaskForm dialog closing**: Fixed async handling when creating tasks with <= 5 pomodoros
+- **TaskStatus type**: Added `'divided'` status to `src/types/index.ts` for split tasks
+- **Home.test.tsx**: Added mocks for `useCreateTask`, `useUpdateTask`, `useSplitTask`, `useProjects`
 
 ---
 

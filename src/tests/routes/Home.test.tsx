@@ -3,15 +3,27 @@ import { render, screen } from "@testing-library/react";
 import { Route } from "@/routes/index";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTimerStore } from "@/stores/timerStore";
-import { useAllTasks } from "@/hooks/useTasks";
 
-// Mock the store and hooks
+// Mock the store
 vi.mock("@/stores/timerStore");
-vi.mock("@/hooks/useTasks");
+
+// Mock the hooks individually
+vi.mock("@/hooks/useTasks", () => ({
+  useAllTasks: vi.fn(() => ({ data: [], isLoading: false })),
+  useCreateTask: vi.fn(() => ({ mutateAsync: vi.fn() })),
+  useUpdateTask: vi.fn(() => ({ mutateAsync: vi.fn() })),
+  useSplitTask: vi.fn(() => ({ mutateAsync: vi.fn() })),
+}));
+
+vi.mock("@/hooks/useProjects", () => ({
+  useProjects: vi.fn(() => ({ data: [], isLoading: false })),
+}));
 
 // Mock TaskSelector to verify it is being used
 vi.mock("@/components/timer/TaskSelector", () => ({
-  TaskSelector: vi.fn(() => <div data-testid="task-selector-mock">Task Selector Mock</div>),
+  TaskSelector: vi.fn(() => (
+    <div data-testid="task-selector-mock">Task Selector Mock</div>
+  )),
 }));
 
 describe("Home Page (Index)", () => {
@@ -27,10 +39,6 @@ describe("Home Page (Index)", () => {
       setActiveTask: vi.fn(),
       skip: vi.fn(),
     });
-    (useAllTasks as any).mockReturnValue({
-      data: [],
-      isLoading: false,
-    });
   });
 
   it("renders the TaskSelector component", () => {
@@ -38,7 +46,7 @@ describe("Home Page (Index)", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Index />
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(screen.getByTestId("task-selector-mock")).toBeInTheDocument();

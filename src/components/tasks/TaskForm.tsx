@@ -67,11 +67,15 @@ export function TaskForm({
         status: "pending" as const,
       };
 
-      if (value.estimatedPomodoros > 5) {
-        const createdTask = await onSubmit(taskData);
-        if (createdTask) setTaskToSplit(createdTask);
-      } else {
-        void onSubmit(taskData);
+      try {
+        if (value.estimatedPomodoros > 5) {
+          const createdTask = await onSubmit(taskData);
+          if (createdTask) setTaskToSplit(createdTask);
+        } else {
+          await onSubmit(taskData);
+        }
+      } catch (error) {
+        console.error("Failed to submit task:", error);
       }
     },
   });
