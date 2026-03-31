@@ -1,6 +1,6 @@
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import { Timer, Layers, ListTodo, Download } from "lucide-react";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+// import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { useTimerStore } from "@/stores/timerStore";
 import { formatTime } from "@/lib/utils";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
@@ -100,7 +100,7 @@ export function RootLayout() {
           </Link>
         </div>
       </footer>
-      <TanStackRouterDevtools />
+      {/* <TanStackRouterDevtools /> */}
     </div>
   );
 }

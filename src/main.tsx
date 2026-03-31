@@ -12,8 +12,12 @@ if (!rootEl) {
 
 ReactDOM.createRoot(rootEl).render(
   <React.StrictMode>
-    <ConvexAuthProvider client={convex}>
+    {convex ? (
+      <ConvexAuthProvider client={convex}>
+        <App />
+      </ConvexAuthProvider>
+    ) : (
       <App />
-    </ConvexAuthProvider>
+    )}
   </React.StrictMode>,
 );

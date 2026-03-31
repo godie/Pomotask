@@ -20,9 +20,9 @@
     "@radix-ui/react-dialog": "^1.1.15",
     "@tanstack/react-form": "latest",
     "@tanstack/react-query": "^5.56.2",
-    "@tanstack/react-router": "latest",
+    "@tanstack/react-router": "^1.168.10",
     "@tanstack/react-table": "^8.20.5",
-    "@tanstack/router-devtools": "^1.166.10",
+    "@tanstack/router-devtools": "^1.166.11",
     "@tanstack/zod-form-adapter": "^0.42.1",
     "clsx": "^2.1.1",
     "convex": "^1.34.1",
@@ -34,6 +34,11 @@
     "tailwind-merge": "^2.5.2",
     "zod": "^4.3.6",
     "zustand": "^5.0.12"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   },
   "devDependencies": {
     "@commitlint/cli": "^19.6.0",
