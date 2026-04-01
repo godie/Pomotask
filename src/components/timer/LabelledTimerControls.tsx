@@ -2,7 +2,14 @@ import { useTimerStore } from "@/stores/timerStore";
 import { Play, Pause, RotateCcw, SkipForward } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export function LabelledTimerControls() {
+interface LabelledTimerControlsProps {
+  /** Hides reset during breaks so users do not jump back to focus by mistake. */
+  hideReset?: boolean;
+}
+
+export function LabelledTimerControls({
+  hideReset = false,
+}: LabelledTimerControlsProps) {
   const { status, mode, start, pause, resume, reset, skip } = useTimerStore();
 
   const isRunning = status === "running";
@@ -23,20 +30,22 @@ export function LabelledTimerControls() {
 
   return (
     <div className="flex flex-wrap justify-center gap-3 sm:gap-5 items-end">
-      <button
-        type="button"
-        onClick={reset}
-        className={cn(
-          iconBtn,
-          "border-outline/25 text-on_surface_variant hover:bg-surface_variant bg-surface/50",
-        )}
-        title="Reset"
-      >
-        <RotateCcw className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden />
-        <span className="font-label text-[10px] uppercase tracking-widest">
-          Reset
-        </span>
-      </button>
+      {!hideReset && (
+        <button
+          type="button"
+          onClick={reset}
+          className={cn(
+            iconBtn,
+            "border-outline/25 text-on_surface_variant hover:bg-surface_variant bg-surface/50",
+          )}
+          title="Reset"
+        >
+          <RotateCcw className="w-5 h-5 sm:w-6 sm:h-6" aria-hidden />
+          <span className="font-label text-[10px] uppercase tracking-widest">
+            Reset
+          </span>
+        </button>
+      )}
 
       {isIdle && (
         <button

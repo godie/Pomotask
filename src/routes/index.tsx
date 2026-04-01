@@ -1,14 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useTimerStore } from "@/stores/timerStore";
 import { TimerRing } from "@/components/timer/TimerRing";
 import { LabelledTimerControls } from "@/components/timer/LabelledTimerControls";
-import { BreakOverlay } from "@/components/timer/BreakOverlay";
-import { TaskSelector } from "@/components/timer/TaskSelector";
-import { TaskForm } from "@/components/tasks/TaskForm";
-import { Dialog } from "@/components/ui/Dialog";
-import { DashboardFocusStats } from "@/components/home/DashboardFocusStats";
-import { DashboardActiveTask } from "@/components/home/DashboardActiveTask";
+import { BreakTimerPanel } from "@/components/timer/BreakTimerPanel";
 import { formatTime, cn } from "@/lib/utils";
 import {
   FOCUS_DURATION,
@@ -19,6 +14,10 @@ import {
 import { useAllTasks, useCreateTask, useUpdateTask } from "@/hooks/useTasks";
 import { useProjects } from "@/hooks/useProjects";
 import { useFocusStats } from "@/hooks/useFocusStats";
+import { DashboardFocusStats } from "@/components/home/DashboardFocusStats";
+import { DashboardInlineTasks } from "@/components/home/DashboardInlineTasks";
+import { NextFocusTaskBanner } from "@/components/home/NextFocusTaskBanner";
+import type { Task } from "@/types";
 
 function modeLabel(mode: "focus" | "short_break" | "long_break"): string {
   if (mode === "focus") return "Focus mode";
@@ -28,21 +27,19 @@ function modeLabel(mode: "focus" | "short_break" | "long_break"): string {
 
 function IndexPage() {
   const {
-    status,
     secondsLeft,
     mode,
     activeTaskId,
     pomodorosCompleted,
     setActiveTask,
-    skip,
   } = useTimerStore();
   const { data: tasks } = useAllTasks();
   const { data: projects } = useProjects();
   const { mutateAsync: createTask } = useCreateTask();
   const { mutateAsync: updateTask } = useUpdateTask();
   const { streakDays, totalFocusedLabel } = useFocusStats();
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [taskPickerOpen, setTaskPickerOpen] = useState(false);
+
+  const isBreak = mode !== "focus";
 
   const totalDuration =
     mode === "focus"
@@ -67,28 +64,15 @@ function IndexPage() {
     return m;
   }, [projects]);
 
-  const pendingTasksSorted = useMemo(() => {
-    return (
-      tasks
-        ?.filter((t) => t.status === "pending")
-        .sort((a, b) => a.createdAt - b.createdAt) ?? []
-    );
-  }, [tasks]);
-
-  const activeOrdinal = activeTask
-    ? pendingTasksSorted.findIndex((t) => t.id === activeTask.id) + 1
-    : 0;
-  const pendingTotal = pendingTasksSorted.length;
-
-  const projectLabel =
+  const activeProjectName =
     activeTask?.projectId != null
-      ? (projectMap.get(activeTask.projectId) ?? "Project")
+      ? (projectMap.get(activeTask.projectId) ?? null)
       : null;
 
   const cycleSlot =
     (pomodorosCompleted % POMODOROS_UNTIL_LONG_BREAK) + 1;
 
-  const handleToggleComplete = async (task: { id: string; status: string }) => {
+  const handleToggleComplete = async (task: Task) => {
     await updateTask({
       id: task.id,
       data: {
@@ -98,6 +82,12 @@ function IndexPage() {
     });
   };
 
+  const handleCreateTask = async (
+    data: Omit<Task, "id" | "createdAt" | "updatedAt">,
+  ) => {
+    return createTask(data);
+  };
+
   return (
     <div
       className={cn(
@@ -105,15 +95,13 @@ function IndexPage() {
         "bg-[linear-gradient(rgba(255,45,120,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,45,120,0.03)_1px,transparent_1px)] bg-[size:48px_48px]",
       )}
     >
-      {status === "idle" && mode !== "focus" && (
-        <BreakOverlay mode={mode} onSkip={skip} />
-      )}
-
       <div className="grid gap-8 lg:gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(320px,380px)] items-start">
-        <section className="flex flex-col items-center text-center space-y-6 sm:space-y-8 pt-2 pb-4">
+        <section className="flex flex-col items-center text-center space-y-5 sm:space-y-7 pt-2 pb-4">
           <p className="font-label text-[10px] sm:text-xs uppercase tracking-[0.35em] text-on_surface_variant">
             {modeLabel(mode)}
           </p>
+
+          {isBreak ? <BreakTimerPanel mode={mode} /> : null}
 
           <div className="relative">
             <TimerRing progress={progress} mode={mode} />
@@ -129,7 +117,14 @@ function IndexPage() {
             </div>
           </div>
 
-          <LabelledTimerControls />
+          {!isBreak ? (
+            <NextFocusTaskBanner
+              task={activeTask}
+              projectName={activeProjectName}
+            />
+          ) : null}
+
+          <LabelledTimerControls hideReset={isBreak} />
         </section>
 
         <aside className="flex flex-col gap-4 sm:gap-5 w-full lg:pt-10">
@@ -138,55 +133,36 @@ function IndexPage() {
             totalFocusedLabel={totalFocusedLabel}
           />
 
-          <DashboardActiveTask
-            task={activeTask}
-            projectLabel={projectLabel}
-            activeOrdinal={activeOrdinal}
-            pendingTotal={pendingTotal}
-            onOpenTaskPicker={() => {
-              setTaskPickerOpen(true);
-            }}
+          {isBreak ? (
+            <div className="rounded-2xl border border-outline/15 bg-surface_container/60 px-4 py-3">
+              <p className="font-label text-[10px] uppercase tracking-widest text-on_surface_variant mb-2">
+                After this break
+              </p>
+              <NextFocusTaskBanner
+                task={activeTask}
+                projectName={activeProjectName}
+                compact
+              />
+            </div>
+          ) : null}
+
+          <DashboardInlineTasks
+            tasks={tasks}
+            projects={projects}
+            activeTaskId={activeTaskId}
+            setActiveTask={setActiveTask}
             onToggleComplete={handleToggleComplete}
-            onCreateTask={() => {
-              setIsCreateOpen(true);
-            }}
+            onCreateTask={handleCreateTask}
           />
 
-          {activeTask ? (
+          {!isBreak && activeTask ? (
             <p className="text-center lg:text-left font-label text-[10px] uppercase tracking-widest text-on_surface_variant px-1">
-              Cycle {cycleSlot} / {POMODOROS_UNTIL_LONG_BREAK} — long break after
-              every {POMODOROS_UNTIL_LONG_BREAK} focus blocks
+              Cycle {cycleSlot} / {POMODOROS_UNTIL_LONG_BREAK} — long break
+              after every {POMODOROS_UNTIL_LONG_BREAK} focus blocks
             </p>
           ) : null}
         </aside>
       </div>
-
-      <TaskSelector
-        variant="pickerOnly"
-        tasks={tasks}
-        activeTaskId={activeTaskId}
-        setActiveTask={setActiveTask}
-        onToggleComplete={handleToggleComplete}
-        onCreateTask={() => {
-          setIsCreateOpen(true);
-        }}
-        taskPickerOpen={taskPickerOpen}
-        onTaskPickerOpenChange={setTaskPickerOpen}
-      />
-
-      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <TaskForm
-          title="Add Task"
-          onSubmit={async (data) => {
-            const task = await createTask(data);
-            setIsCreateOpen(false);
-            return task;
-          }}
-          onCancel={() => {
-            setIsCreateOpen(false);
-          }}
-        />
-      </Dialog>
     </div>
   );
 }
