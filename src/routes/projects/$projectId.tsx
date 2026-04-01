@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useProject } from "@/hooks/useProjects";
 import { useTasksByProject, useDeleteTask, useUpdateTask } from "@/hooks/useTasks";
 import { TaskList } from "@/components/tasks/TaskList";
-import { ProjectStats } from "@/components/projects/ProjectStats";
+import { ProjectOverviewHero } from "@/components/projects/ProjectOverviewHero";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useState } from "react";
@@ -36,8 +36,13 @@ export function ProjectDetailPage({ projectId }: { projectId: string }) {
 
   if (!project) return <div>Project not found</div>;
 
-  const totalEstimated = tasks?.reduce((acc, t) => acc + t.estimatedPomodoros, 0) || 0;
-  const totalReal = tasks?.reduce((acc, t) => acc + t.realPomodoros, 0) || 0;
+  const list = tasks ?? [];
+  const totalEstimated = list.reduce((acc, t) => acc + t.estimatedPomodoros, 0);
+  const totalReal = list.reduce((acc, t) => acc + t.realPomodoros, 0);
+  const pendingCount = list.filter(
+    (t) => t.status === "pending" || t.status === "in_progress",
+  ).length;
+  const completedCount = list.filter((t) => t.status === "completed").length;
 
   return (
     <div className="animate-in fade-in duration-500">
@@ -49,29 +54,21 @@ export function ProjectDetailPage({ projectId }: { projectId: string }) {
         <span className="font-label text-xs uppercase tracking-widest">Back to Projects</span>
       </Link>
 
-      <div className="flex justify-between items-start mb-8">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div
-              className="w-4 h-4 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.2)]"
-              style={{ backgroundColor: project.color }}
-            />
-            <h1 className="text-3xl font-headline font-bold text-on_surface">
-              {project.name}
-            </h1>
-          </div>
-          {project.description && (
-            <p className="text-on_surface_variant max-w-xl">
-              {project.description}
-            </p>
-          )}
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-8">
+        <div className="flex-1 min-w-0">
+          <ProjectOverviewHero
+            project={project}
+            pendingCount={pendingCount}
+            completedCount={completedCount}
+            totalEstimated={totalEstimated}
+            totalReal={totalReal}
+          />
         </div>
-
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
-            <button className="bg-surface border-2 border-tertiary/50 text-tertiary px-6 py-3 rounded-xl font-headline font-bold uppercase tracking-widest flex items-center gap-2 hover:border-tertiary hover:shadow-[0_0_20px_rgba(255,224,74,0.3)] transition-all active:scale-95 [text-shadow:0_0_8px_rgba(255,224,74,0.5)]">
+            <button className="shrink-0 w-full lg:w-auto bg-surface border-2 border-tertiary/50 text-tertiary px-6 py-3 rounded-xl font-headline font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:border-tertiary hover:shadow-[0_0_20px_rgba(255,224,74,0.3)] transition-all active:scale-95 [text-shadow:0_0_8px_rgba(255,224,74,0.5)]">
               <Plus size={20} />
-              <span className="hidden sm:inline">Add Task</span>
+              <span>Add Task</span>
             </button>
           </DialogTrigger>
           <TaskForm
@@ -92,17 +89,10 @@ export function ProjectDetailPage({ projectId }: { projectId: string }) {
       <div className="grid grid-cols-1 gap-8">
         <section>
           <h2 className="font-label text-xs uppercase tracking-[0.2em] text-on_surface_variant mb-4">
-            Project Stats
-          </h2>
-          <ProjectStats estimated={totalEstimated} real={totalReal} />
-        </section>
-
-        <section>
-          <h2 className="font-label text-xs uppercase tracking-[0.2em] text-on_surface_variant mb-4">
             Tasks
           </h2>
           <TaskList
-            tasks={tasks || []}
+            tasks={list}
             projectId={project.id}
             onDelete={deleteTask}
             onToggleComplete={(task) =>

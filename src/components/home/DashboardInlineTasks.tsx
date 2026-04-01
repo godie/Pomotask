@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Task } from "@/types";
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, Undo2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
@@ -166,17 +166,29 @@ export function DashboardInlineTasks({
             Completed ({completed.length})
           </button>
           {completedOpen && (
-            <ul className="mt-2 space-y-1 max-h-28 overflow-y-auto">
+            <ul className="mt-2 space-y-1 max-h-36 overflow-y-auto">
               {completed.slice(0, 8).map((task) => (
                 <li
                   key={task.id}
-                  className="text-xs text-on_surface_variant/70 truncate pl-1"
+                  className="flex items-center gap-2 rounded-lg border border-outline/10 bg-surface/30 px-2 py-1.5"
                 >
                   <Check
-                    className="inline w-3 h-3 mr-1 text-primary/70"
+                    className="w-3.5 h-3.5 shrink-0 text-tertiary"
                     aria-hidden
                   />
-                  {task.name}
+                  <span className="text-xs text-on_surface_variant flex-1 min-w-0 truncate">
+                    {task.name}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onToggleComplete(task);
+                    }}
+                    className="shrink-0 flex items-center gap-1 px-2 py-1 rounded-md font-label text-[10px] uppercase tracking-wider text-secondary hover:bg-secondary/10 border border-secondary/20 transition-colors"
+                  >
+                    <Undo2 className="w-3 h-3" aria-hidden />
+                    Undo
+                  </button>
                 </li>
               ))}
             </ul>

@@ -53,8 +53,13 @@ export function useUpdateTask() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<Task> }) =>
       updateTask(id, data),
-    onSuccess: () => {
+    onSuccess: (task) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.tasks.all });
+      if (task.projectId != null) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.tasks.byProject(task.projectId),
+        });
+      }
     },
   });
 }

@@ -97,10 +97,7 @@ describe("ProjectDetail Page", () => {
     );
 
     await waitFor(() => {
-        // Total estimated: 2 + 3 = 5
-        // Total real: 1 + 3 = 4
-        expect(screen.getByText("5")).toBeInTheDocument();
-        expect(screen.getByText("4")).toBeInTheDocument();
+      expect(screen.getByText(/4 \/ 5/)).toBeInTheDocument();
     });
   });
 });

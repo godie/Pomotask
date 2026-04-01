@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
+import { isProjectDetailPath } from "@/lib/projectRoutes";
 import {
   useProjects,
   useCreateProject,
@@ -15,7 +16,16 @@ import { Plus } from "lucide-react";
 import { Skeleton } from "@/components/ui/Skeleton";
 import type { Project } from "@/types";
 
-export function ProjectsPage() {
+export function ProjectsLayout() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  if (isProjectDetailPath(pathname)) {
+    return <Outlet />;
+  }
+
+  return <ProjectsIndexPage />;
+}
+
+function ProjectsIndexPage() {
   const { data: projects, isLoading: projectsLoading } = useProjects();
   const { data: tasks, isLoading: tasksLoading } = useAllTasks();
   const { mutateAsync: createProject } = useCreateProject();
@@ -171,5 +181,5 @@ export function ProjectsPage() {
 }
 
 export const Route = createFileRoute("/projects")({
-  component: ProjectsPage,
+  component: ProjectsLayout,
 });

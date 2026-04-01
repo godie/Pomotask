@@ -164,7 +164,7 @@ describe("ProjectDetailPage", () => {
     expect(screen.getByText("Task 2")).toBeInTheDocument();
   });
 
-  it("shows project stats with estimated and real totals", () => {
+  it("shows pomodoro progress totals in the overview hero", () => {
     vi.mocked(useProjects.useProject).mockReturnValue({
       data: mockProject,
       isLoading: false,
@@ -179,8 +179,10 @@ describe("ProjectDetailPage", () => {
     render(<ProjectDetailPage projectId="proj-1" />, {
       wrapper: createWrapper(),
     });
-    expect(screen.getByText("6")).toBeInTheDocument();
-    expect(screen.getByText("2")).toBeInTheDocument();
+    expect(screen.getByText(/2 \/ 6/)).toBeInTheDocument();
+    expect(
+      screen.getByRole("progressbar", { name: /estimated pomodoros completed/i }),
+    ).toBeInTheDocument();
   });
 
   it("shows empty state when no tasks exist for project", () => {
@@ -217,7 +219,9 @@ describe("ProjectDetailPage", () => {
       wrapper: createWrapper(),
     });
     expect(screen.getByText(/in progress/i)).toBeInTheDocument();
-    expect(screen.getByText(/pending/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("region", { name: /pending tasks/i }),
+    ).toBeInTheDocument();
     expect(screen.getByText(/completed/i)).toBeInTheDocument();
   });
 
@@ -256,6 +260,6 @@ describe("ProjectDetailPage", () => {
     render(<ProjectDetailPage projectId="proj-1" />, {
       wrapper: createWrapper(),
     });
-    expect(screen.getByText(/1 \/ 2/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/1 \/ 2/i).length).toBeGreaterThanOrEqual(1);
   });
 });
