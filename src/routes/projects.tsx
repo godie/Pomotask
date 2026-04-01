@@ -2,28 +2,33 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   useProjects,
   useCreateProject,
+  useUpdateProject,
   useDeleteProject,
 } from "@/hooks/useProjects";
 import { useAllTasks, useCreateTask } from "@/hooks/useTasks";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { ProjectForm } from "@/components/projects/ProjectForm";
 import { TaskForm } from "@/components/tasks/TaskForm";
-import { Dialog, DialogTrigger } from "@/components/ui/Dialog";
+import { Dialog } from "@/components/ui/Dialog";
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Skeleton } from "@/components/ui/Skeleton";
+import type { Project } from "@/types";
 
 export function ProjectsPage() {
   const { data: projects, isLoading: projectsLoading } = useProjects();
   const { data: tasks, isLoading: tasksLoading } = useAllTasks();
   const { mutateAsync: createProject } = useCreateProject();
+  const { mutateAsync: updateProject } = useUpdateProject();
   const { mutateAsync: deleteProject } = useDeleteProject();
   const { mutateAsync: createTask } = useCreateTask();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
     null,
   );
+  const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
 
   if (projectsLoading || tasksLoading)
     return (
@@ -42,6 +47,11 @@ export function ProjectsPage() {
     setIsTaskFormOpen(true);
   };
 
+  const handleEdit = (project: Project) => {
+    setProjectToEdit(project);
+    setIsEditOpen(true);
+  };
+
   return (
     <div className="animate-in fade-in duration-500">
       <div className="flex justify-between items-center mb-6 sm:mb-10">
@@ -54,12 +64,6 @@ export function ProjectsPage() {
           </p>
         </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger asChild>
-            <button className="bg-secondary text-on_secondary px-4 py-2.5 sm:px-6 sm:py-3 rounded-xl font-headline font-bold uppercase tracking-widest flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,204,0.3)] hover:shadow-[0_0_25px_rgba(0,255,204,0.5)] transition-all active:scale-95">
-              <Plus size={20} />
-              <span className="hidden sm:inline">New Project</span>
-            </button>
-          </DialogTrigger>
           <ProjectForm
             title="Create Project"
             onSubmit={async (data) => {
@@ -71,7 +75,42 @@ export function ProjectsPage() {
             }}
           />
         </Dialog>
+        <button
+          onClick={() => {
+            setIsCreateOpen(true);
+          }}
+          className="bg-secondary text-on_secondary px-4 py-2.5 sm:px-6 sm:py-3 rounded-xl font-headline font-bold uppercase tracking-widest flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,204,0.3)] hover:shadow-[0_0_25px_rgba(0,255,204,0.5)] transition-all active:scale-95"
+        >
+          <Plus size={20} />
+          <span className="hidden sm:inline">New Project</span>
+        </button>
       </div>
+
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <ProjectForm
+          title="Edit Project"
+          initialData={
+            projectToEdit
+              ? {
+                  name: projectToEdit.name,
+                  color: projectToEdit.color,
+                  description: projectToEdit.description || "",
+                }
+              : undefined
+          }
+          onSubmit={async (data) => {
+            if (projectToEdit) {
+              await updateProject({ id: projectToEdit.id, data });
+            }
+            setIsEditOpen(false);
+            setProjectToEdit(null);
+          }}
+          onCancel={() => {
+            setIsEditOpen(false);
+            setProjectToEdit(null);
+          }}
+        />
+      </Dialog>
 
       <Dialog open={isTaskFormOpen} onOpenChange={setIsTaskFormOpen}>
         <TaskForm
@@ -119,7 +158,7 @@ export function ProjectsPage() {
                 key={project.id}
                 project={project}
                 onDelete={deleteProject}
-                onEdit={() => {}}
+                onEdit={handleEdit}
                 onAddTask={handleAddTask}
                 taskCount={projectTasks.length}
               />

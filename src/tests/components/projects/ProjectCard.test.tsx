@@ -3,6 +3,14 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import type { Project } from "@/types";
 
+vi.mock("@tanstack/react-router", () => ({
+  Link: vi.fn(({ children, ...props }) => (
+    <a {...props} data-testid="mock-link">
+      {children}
+    </a>
+  )),
+}));
+
 const mockProject: Project = {
   id: "1",
   name: "Test Project",
