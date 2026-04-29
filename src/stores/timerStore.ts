@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { useEffect, useCallback } from "react";
 import {
   FOCUS_DURATION,
   LONG_BREAK,
@@ -18,6 +19,7 @@ interface TimerState {
   pomodorosCompleted: number;
   totalPomodorosToday: number;
   activeTaskId: string | null;
+  sessionId: string | null;
   start: () => void;
   pause: () => void;
   resume: () => void;
@@ -34,6 +36,7 @@ const initialTimerFields = {
   pomodorosCompleted: 0,
   totalPomodorosToday: 0,
   activeTaskId: null as string | null,
+  sessionId: null as string | null,
 };
 
 let timerInterval: ReturnType<typeof setInterval> | null = null;
@@ -105,6 +108,7 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     if (mode === "focus") {
       sendNotification("Focus Complete!", "Time for a break.");
       if (activeTaskId) {
+        // Guardar en IndexedDB (offline-first)
         await incrementRealPomodoros(activeTaskId);
         await createSession({
           taskId: activeTaskId,
@@ -113,6 +117,14 @@ export const useTimerStore = create<TimerState>((set, get) => ({
           type: "focus",
           durationSeconds: FOCUS_DURATION - secondsLeft,
         });
+        
+        // TODO: Encolar para sincronización con Convex
+        // await syncService.queueOperation({
+        //   type: 'create',
+        //   entity: 'session',
+        //   data: { ... },
+        //   localId: sessionId,
+        // });
       }
 
       const nextCompleted = pomodorosCompleted + 1;
@@ -149,3 +161,15 @@ export const useTimerStore = create<TimerState>((set, get) => ({
     set({ activeTaskId: taskId });
   },
 }));
+
+// Hook para cleanup automático del timer
+export function useTimerCleanup() {
+  useEffect(() => {
+    return () => {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    };
+  }, []);
+}
