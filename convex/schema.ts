@@ -25,6 +25,7 @@ export default defineSchema({
     lastSeenAt: v.number(),
   }),
 
+  // Tareas compatibles con Pomodoro y sistema de agentes
   tasks: defineTable({
     projectId: v.id("projects"),
     ownerUserId: v.optional(v.id("users")),
@@ -47,7 +48,14 @@ export default defineSchema({
     createdAt: v.number(),
     startedAt: v.optional(v.number()),
     endedAt: v.optional(v.number()),
-  }).index("by_status_type", ["status", "type"]),
+    // Campos específicos de Pomodoro
+    estimatedPomodoros: v.optional(v.number()),
+    realPomodoros: v.optional(v.number()),
+    completedAt: v.optional(v.number()),
+  })
+    .index("by_status_type", ["status", "type"])
+    .index("by_project", ["projectId"])
+    .index("by_owner", ["ownerUserId"]),
 
   taskLogs: defineTable({
     taskId: v.id("tasks"),
@@ -67,4 +75,18 @@ export default defineSchema({
     resolvedAt: v.optional(v.number()),
     createdAt: v.number(),
   }).index("by_task", ["taskId"]),
+
+  // Sesiones de Pomodoro
+  pomodoroSessions: defineTable({
+    userId: v.id("users"),
+    taskId: v.optional(v.id("tasks")),
+    startedAt: v.number(),
+    completedAt: v.optional(v.number()),
+    type: v.string(), // "focus", "short_break", "long_break"
+    durationSeconds: v.number(),
+    completed: v.boolean(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_task", ["taskId"])
+    .index("by_user_date", ["userId", "startedAt"]),
 });
