@@ -38,25 +38,30 @@ vi.mock("@/db/schema", () => ({
 }));
 
 // Mock Web Audio API
-global.AudioContext = vi.fn().mockImplementation(() => ({
-  createOscillator: vi.fn().mockReturnValue({
-    connect: vi.fn(),
-    start: vi.fn(),
-    stop: vi.fn(),
-    frequency: { value: 0 },
-    type: "sine",
-  }),
-  createGain: vi.fn().mockReturnValue({
-    connect: vi.fn(),
-    gain: {
-      value: 1,
-      setValueAtTime: vi.fn(),
-      exponentialRampToValueAtTime: vi.fn(),
-    },
-  }),
-  destination: {},
-  currentTime: 0,
-}));
+class MockAudioContext {
+  createOscillator() {
+    return {
+      connect: vi.fn(),
+      start: vi.fn(),
+      stop: vi.fn(),
+      frequency: { value: 0 },
+      type: "sine",
+    };
+  }
+  createGain() {
+    return {
+      connect: vi.fn(),
+      gain: {
+        value: 1,
+        setValueAtTime: vi.fn(),
+        exponentialRampToValueAtTime: vi.fn(),
+      },
+    };
+  }
+  destination = {};
+  currentTime = 0;
+}
+global.AudioContext = MockAudioContext as unknown as typeof AudioContext;
 
 // Mock Notification API
 const mockNotification = vi.fn();
@@ -65,4 +70,4 @@ Object.assign(mockNotification, {
   requestPermission: vi.fn().mockResolvedValue("granted"),
 });
 
-global.Notification = mockNotification as any;
+global.Notification = mockNotification as unknown as typeof Notification;

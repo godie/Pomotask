@@ -11,7 +11,7 @@ import { FOCUS_DURATION, SHORT_BREAK, LONG_BREAK } from "@/lib/pomodoro";
 import { useAllTasks, useCreateTask, useUpdateTask } from "@/hooks/useTasks";
 import { useState } from "react";
 
-function IndexPage() {
+export function IndexPage() {
   const { status, secondsLeft, mode, activeTaskId, setActiveTask, skip } =
     useTimerStore();
   const { data: tasks } = useAllTasks();

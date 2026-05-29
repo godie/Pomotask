@@ -12,7 +12,7 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Skeleton } from "@/components/ui/Skeleton";
 
-function TasksPage() {
+export function TasksPage() {
   const { data: tasks, isLoading } = useAllTasks();
   const { mutateAsync: createTask } = useCreateTask();
   const { mutateAsync: deleteTask } = useDeleteTask();
