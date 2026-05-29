@@ -22,7 +22,7 @@ vi.mock("@/hooks/useTasks", () => ({
 
 import { useProject } from "@/hooks/useProjects";
 import { useTasksByProject } from "@/hooks/useTasks";
-import { Route as ProjectDetailRoute } from "@/routes/projects/$projectId";
+import { Route as ProjectDetailRoute } from "@/routes/projects/$projectId.lazy";
 
 describe("ProjectDetail Page", () => {
   const queryClient = new QueryClient({

@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as useProjects from "@/hooks/useProjects";
 import * as useTasks from "@/hooks/useTasks";
 import type { Project, Task } from "@/types";
-import { ProjectDetailPage } from "@/routes/projects/$projectId";
+import { ProjectDetailPage } from "@/routes/projects/$projectId.lazy";
 
 vi.mock("@tanstack/react-router", async (importOriginal) => {
   const actual = await importOriginal();

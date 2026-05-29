@@ -18,22 +18,24 @@ const TasksRoute = TasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import('./routes/tasks.lazy').then((d) => d.Route))
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import('./routes/projects.lazy').then((d) => d.Route))
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   id: '/$projectId',
   path: '/$projectId',
   getParentRoute: () => ProjectsRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/projects/$projectId.lazy').then((d) => d.Route),
+)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute

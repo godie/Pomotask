@@ -15,7 +15,7 @@ vi.mock("@/components/tasks/TaskList", () => ({
 }));
 
 // Import component after mocks
-import { Route } from "@/routes/projects/$projectId";
+import { Route } from "@/routes/projects/$projectId.lazy";
 
 // Mock Route and Link
 vi.mock("@tanstack/react-router", async () => {
@@ -23,6 +23,11 @@ vi.mock("@tanstack/react-router", async () => {
   return {
     ...actual,
     createFileRoute: vi.fn(() => {
+        const routeMock = (options: any) => ({ options, useParams: vi.fn(() => ({ projectId: "project-1" })) });
+        routeMock.useParams = vi.fn(() => ({ projectId: "project-1" }));
+        return routeMock;
+    }),
+    createLazyFileRoute: vi.fn(() => {
         const routeMock = (options: any) => ({ options, useParams: vi.fn(() => ({ projectId: "project-1" })) });
         routeMock.useParams = vi.fn(() => ({ projectId: "project-1" }));
         return routeMock;

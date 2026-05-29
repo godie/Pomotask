@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { Route } from "@/routes/index";
+import { Route } from "@/routes/index.lazy";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTimerStore } from "@/stores/timerStore";
 
