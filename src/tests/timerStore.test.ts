@@ -27,6 +27,7 @@ beforeEach(() => {
     pomodorosCompleted: 0,
     totalPomodorosToday: 0,
     activeTaskId: null,
+    lastTickAt: null,
   });
   vi.clearAllMocks();
   vi.useFakeTimers();

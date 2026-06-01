@@ -83,8 +83,9 @@ describe("RootLayout", () => {
     const router = createMockRouter();
     render(<RouterProvider router={router} />);
 
-    // Wait a bit to ensure it doesn't appear
-    await new Promise((r) => setTimeout(r, 100));
-    expect(screen.queryByText(/FOCUS: 25:00/i)).not.toBeInTheDocument();
+    // Wait to ensure mini-timer bar doesn't appear
+    await waitFor(() => {
+      expect(screen.queryByText(/FOCUS: 25:00/i)).not.toBeInTheDocument();
+    });
   });
 });

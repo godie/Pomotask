@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { Route } from "@/routes/index";
+import { Route } from "@/routes/index.lazy";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useTimerStore } from "@/stores/timerStore";
 
@@ -27,9 +27,9 @@ vi.mock("@/hooks/useFocusStats", () => ({
   })),
 }));
 
-vi.mock("@/components/home/DashboardInlineTasks", () => ({
-  DashboardInlineTasks: vi.fn(() => (
-    <div data-testid="inline-tasks-mock">Inline Tasks Mock</div>
+vi.mock("@/components/timer/TaskSelector", () => ({
+  TaskSelector: vi.fn(() => (
+    <div data-testid="task-selector-mock">Task Selector Mock</div>
   )),
 }));
 
@@ -48,7 +48,7 @@ describe("Home Page (Index)", () => {
     });
   });
 
-  it("renders the inline tasks panel", () => {
+  it("renders the task selector panel", () => {
     const Index = (Route as any).options.component;
     render(
       <QueryClientProvider client={queryClient}>
@@ -56,6 +56,6 @@ describe("Home Page (Index)", () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByTestId("inline-tasks-mock")).toBeInTheDocument();
+    expect(screen.getByTestId("task-selector-mock")).toBeInTheDocument();
   });
 });

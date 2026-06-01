@@ -54,6 +54,13 @@ export default tseslint.config(
       'prefer-const': 'error',
     },
   },
+  // Allow Route exports in TanStack Router route files
+  {
+    files: ['src/routes/**/*.tsx'],
+    rules: {
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true, allowExportNames: ['Route'] }],
+    },
+  },
   // Relax rules for test files (vi.fn mocking requires any)
   {
     files: ['src/tests/**/*.{ts,tsx}', '**/*.test.{ts,tsx}'],
