@@ -10,6 +10,7 @@ export const queryKeys = {
     detail: (id: string) => ['tasks', id] as const,
   },
   sessions: {
+    all: ['sessions', 'all'] as const,
     byTask: (taskId: string) => ['sessions', { taskId }] as const,
     today: ['sessions', 'today'] as const,
   },

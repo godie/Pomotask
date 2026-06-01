@@ -19,7 +19,14 @@ vi.mock("@/hooks/useProjects", () => ({
   useProjects: vi.fn(() => ({ data: [], isLoading: false })),
 }));
 
-// Mock TaskSelector to verify it is being used
+vi.mock("@/hooks/useFocusStats", () => ({
+  useFocusStats: vi.fn(() => ({
+    streakDays: 0,
+    totalFocusedLabel: "0m",
+    isLoading: false,
+  })),
+}));
+
 vi.mock("@/components/timer/TaskSelector", () => ({
   TaskSelector: vi.fn(() => (
     <div data-testid="task-selector-mock">Task Selector Mock</div>
@@ -41,7 +48,7 @@ describe("Home Page (Index)", () => {
     });
   });
 
-  it("renders the TaskSelector component", () => {
+  it("renders the task selector panel", () => {
     const Index = (Route as any).options.component;
     render(
       <QueryClientProvider client={queryClient}>

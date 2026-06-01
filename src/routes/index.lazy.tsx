@@ -2,7 +2,7 @@ import { createLazyFileRoute } from "@tanstack/react-router";
 import { useTimerStore } from "@/stores/timerStore";
 import { TimerRing } from "@/components/timer/TimerRing";
 import { TimerControls } from "@/components/timer/TimerControls";
-import { BreakOverlay } from "@/components/timer/BreakOverlay";
+import { BreakTimerPanel } from "@/components/timer/BreakTimerPanel";
 import { TaskSelector } from "@/components/timer/TaskSelector";
 import { LazyTaskForm } from "@/components/tasks/LazyTaskForm";
 import { Dialog } from "@/components/ui/Dialog";
@@ -12,7 +12,7 @@ import { useAllTasks, useCreateTask, useUpdateTask } from "@/hooks/useTasks";
 import { useState } from "react";
 
 export function IndexPage() {
-  const { status, secondsLeft, mode, activeTaskId, setActiveTask, skip } =
+  const { status, secondsLeft, mode, activeTaskId, setActiveTask } =
     useTimerStore();
   const { data: tasks } = useAllTasks();
   const { mutateAsync: createTask } = useCreateTask();
@@ -63,7 +63,7 @@ export function IndexPage() {
       </div>
 
       {status === "idle" && mode !== "focus" && (
-        <BreakOverlay mode={mode} onSkip={skip} />
+        <BreakTimerPanel mode={mode} />
       )}
       <TimerControls />
 
