@@ -7,8 +7,8 @@ import {
 } from "@/hooks/useProjects";
 import { useAllTasks, useCreateTask } from "@/hooks/useTasks";
 import { ProjectCard } from "@/components/projects/ProjectCard";
-import { ProjectForm } from "@/components/projects/ProjectForm";
-import { TaskForm } from "@/components/tasks/TaskForm";
+import { LazyProjectForm } from "@/components/projects/LazyProjectForm";
+import { LazyTaskForm } from "@/components/tasks/LazyTaskForm";
 import { Dialog } from "@/components/ui/Dialog";
 import { useState } from "react";
 import { Plus } from "lucide-react";
@@ -64,7 +64,7 @@ export function ProjectsPage() {
           </p>
         </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <ProjectForm
+          <LazyProjectForm
             title="Create Project"
             onSubmit={async (data) => {
               await createProject(data);
@@ -87,7 +87,7 @@ export function ProjectsPage() {
       </div>
 
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <ProjectForm
+        <LazyProjectForm
           title="Edit Project"
           initialData={
             projectToEdit
@@ -113,7 +113,7 @@ export function ProjectsPage() {
       </Dialog>
 
       <Dialog open={isTaskFormOpen} onOpenChange={setIsTaskFormOpen}>
-        <TaskForm
+        <LazyTaskForm
           title="Add Task"
           initialData={{
             name: "",

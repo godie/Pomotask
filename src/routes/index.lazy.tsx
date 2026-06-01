@@ -4,7 +4,7 @@ import { TimerRing } from "@/components/timer/TimerRing";
 import { TimerControls } from "@/components/timer/TimerControls";
 import { BreakOverlay } from "@/components/timer/BreakOverlay";
 import { TaskSelector } from "@/components/timer/TaskSelector";
-import { TaskForm } from "@/components/tasks/TaskForm";
+import { LazyTaskForm } from "@/components/tasks/LazyTaskForm";
 import { Dialog } from "@/components/ui/Dialog";
 import { formatTime, cn } from "@/lib/utils";
 import { FOCUS_DURATION, SHORT_BREAK, LONG_BREAK } from "@/lib/pomodoro";
@@ -78,7 +78,7 @@ export function IndexPage() {
       />
 
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <TaskForm
+        <LazyTaskForm
           title="Add Task"
           onSubmit={async (data) => {
             const task = await createTask(data);

@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { ArrowLeft, Plus } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogTrigger } from "@/components/ui/Dialog";
-import { TaskForm } from "@/components/tasks/TaskForm";
+import { LazyTaskForm } from "@/components/tasks/LazyTaskForm";
 
 export function ProjectDetailPage({ projectId }: { projectId: string }) {
   const {
@@ -74,7 +74,7 @@ export function ProjectDetailPage({ projectId }: { projectId: string }) {
               <span className="hidden sm:inline">Add Task</span>
             </button>
           </DialogTrigger>
-          <TaskForm
+          <LazyTaskForm
             title="Add Task to Project"
             initialData={{ name: '', projectId: project.id, estimatedPomodoros: 1 }}
             onSubmit={async (data) => {

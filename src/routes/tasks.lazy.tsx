@@ -6,7 +6,7 @@ import {
   useUpdateTask,
 } from "@/hooks/useTasks";
 import { TaskList } from "@/components/tasks/TaskList";
-import { TaskForm } from "@/components/tasks/TaskForm";
+import { LazyTaskForm } from "@/components/tasks/LazyTaskForm";
 import { Dialog, DialogTrigger } from "@/components/ui/Dialog";
 import { useState } from "react";
 import { Plus } from "lucide-react";
@@ -49,7 +49,7 @@ export function TasksPage() {
               <span className="hidden sm:inline">New Task</span>
             </button>
           </DialogTrigger>
-          <TaskForm
+          <LazyTaskForm
             title="Add New Task"
             onSubmit={async (data) => {
               const created = await createTask(data);
