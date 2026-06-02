@@ -10,6 +10,7 @@ export default mergeConfig(
       environment: 'jsdom',
       globals: true,
       watch: false,
+      exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**'],
       setupFiles: ['./src/tests/setup.ts'],
       coverage: {
         provider: 'v8',
@@ -23,6 +24,7 @@ export default mergeConfig(
           '**/*.config.*',
           'src/routeTree.gen.ts',
           'src/main.tsx',
+          '**/*.spec.ts',
         ],
         thresholds: {
           lines: 60,
