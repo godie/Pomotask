@@ -14,10 +14,14 @@ export default defineSchema({
     name: v.string(),
     description: v.optional(v.string()),
     baseBranch: v.optional(v.string()),
+    // Pomotask fields (optional for backward compatibility with agent system)
+    color: v.optional(v.string()),
+    createdAt: v.optional(v.number()),
+    updatedAt: v.optional(v.number()),
   }),
 
   agents: defineTable({
-    ownerUserId: v.id("users"),
+    ownerUserId: v.optional(v.id("users")),
     name: v.string(),
     type: v.string(),
     status: v.string(),
@@ -31,7 +35,7 @@ export default defineSchema({
     title: v.string(),
     description: v.optional(v.string()),
     type: v.string(),
-    status: v.string(), // "pending", "in_progress", "completed", "failed"
+    status: v.string(), // "pending", "in_progress", "completed", "failed" (agent) | "pending", "in_progress", "completed", "divided" (pomotask)
     createdBy: v.optional(v.id("users")),
     claimedBy: v.optional(v.id("agents")),
     parentTaskId: v.optional(v.id("tasks")),
@@ -47,6 +51,11 @@ export default defineSchema({
     createdAt: v.number(),
     startedAt: v.optional(v.number()),
     endedAt: v.optional(v.number()),
+    // Pomotask fields (optional for backward compatibility with agent system)
+    estimatedPomodoros: v.optional(v.number()),
+    realPomodoros: v.optional(v.number()),
+    completedAt: v.optional(v.number()),
+    updatedAt: v.optional(v.number()),
   }).index("by_status_type", ["status", "type"]),
 
   taskLogs: defineTable({
