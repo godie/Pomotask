@@ -20,21 +20,21 @@ Pomotask combines a focused Pomodoro timer with project and task management. Est
 
 ## 🧱 Tech Stack
 
-| Layer                | Technology               |
-| -------------------- | ------------------------ |
-| Framework            | React 18                 |
-| Routing              | TanStack Router          |
-| Server State         | TanStack Query / Convex  |
-| Client State         | Zustand                  |
-| Local DB             | IndexedDB via Dexie.js   |
-| Backend / Sync       | Convex                   |
-| Styling              | Tailwind CSS v4          |
-| UI Components        | shadcn/ui                |
-| Forms                | TanStack Form            |
-| Tables               | TanStack Table           |
-| Build                | Vite                     |
-| Tests                | Vitest + Testing Library |
-| Package manager      | pnpm                     |
+| Layer           | Technology               |
+| --------------- | ------------------------ |
+| Framework       | React 18                 |
+| Routing         | TanStack Router          |
+| Server State    | TanStack Query / Convex  |
+| Client State    | Zustand                  |
+| Local DB        | IndexedDB via Dexie.js   |
+| Backend / Sync  | Convex                   |
+| Styling         | Tailwind CSS v4          |
+| UI Components   | shadcn/ui                |
+| Forms           | TanStack Form            |
+| Tables          | TanStack Table           |
+| Build           | Vite                     |
+| Tests           | Vitest + Testing Library |
+| Package manager | pnpm                     |
 
 ---
 
@@ -65,11 +65,15 @@ pnpm build       # Production bundle
 ```
 
 ### Environment variables (for Convex sync)
-```env
-VITE_CONVEX_URL=https://your-deployment.convex.cloud
+
+```bash
+cp .env.example .env
+# Edit .env and set VITE_CONVEX_URL to your Convex deployment URL
 ```
 
-If these are not set, the app runs fully offline with IndexedDB.
+See [docs/convex-local-setup.md](./docs/convex-local-setup.md) for a step-by-step guide to setting up local Convex dev and testing the full migration flow.
+
+If `VITE_CONVEX_URL` is not set, the app runs fully offline with IndexedDB.
 
 ---
 
@@ -106,6 +110,7 @@ UI/UX designed in [Google Stitch](https://stitch.withgoogle.com/projects/6328229
 - [Technical Specs](./SPECS.md)
 - [Roadmap & Tasks](./ROADMAP.md)
 - [CI/CD & pre-commit](./docs/CICD_SETUP.md)
+- [Convex Local Dev Setup](./docs/convex-local-setup.md)
 
 ---
 

@@ -37,3 +37,4 @@ next-env.d.ts
 
 # convex
 convex/_generated/
+codedb.snapshot

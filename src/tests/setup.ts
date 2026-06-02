@@ -7,6 +7,21 @@ afterEach(() => {
   cleanup();
 });
 
+// Mock Convex hooks — tests always run in Dexie (guest) mode.
+// useConvexAuth returns unauthenticated → useDataSource → "dexie".
+vi.mock("convex/react", async () => {
+  const actual = await vi.importActual("convex/react");
+  return {
+    ...(actual as object),
+    useQuery: vi.fn().mockReturnValue(undefined),
+    useMutation: vi.fn().mockReturnValue(vi.fn()),
+    useConvexAuth: vi.fn().mockReturnValue({
+      isLoading: false,
+      isAuthenticated: false,
+    }),
+  };
+});
+
 // Mock IndexedDB
 vi.mock("@/db/schema", () => ({
   db: {
