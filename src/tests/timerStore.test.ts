@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { act, renderHook } from "@testing-library/react";
-import { useTimerStore } from "@/stores/timerStore";
+import {
+  useTimerStore,
+  recoverRunningTimerAfterHydration,
+} from "@/stores/timerStore";
 import {
   FOCUS_DURATION,
   SHORT_BREAK,
@@ -20,6 +23,10 @@ vi.mock("@/db/sessions", () => ({
 
 // Reset Zustand store between tests
 beforeEach(() => {
+  localStorage.clear();
+  act(() => {
+    useTimerStore.getState().reset();
+  });
   useTimerStore.setState({
     status: "idle",
     mode: "focus",
@@ -79,6 +86,18 @@ describe("timerStore — start / pause / resume", () => {
       result.current.resume();
     });
     expect(result.current.status).toBe("running");
+  });
+
+  it("ticks after resume from paused", () => {
+    const { result } = renderHook(() => useTimerStore());
+    act(() => {
+      useTimerStore.setState({ status: "paused", secondsLeft: 100 });
+      result.current.resume();
+    });
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(result.current.secondsLeft).toBe(99);
   });
 });
 
@@ -166,6 +185,60 @@ describe("timerStore — tick", () => {
     });
     expect(result.current.status).toBe("idle");
     expect(result.current.mode).not.toBe("focus");
+  });
+});
+
+describe("timerStore — refresh recovery", () => {
+  it("subtracts elapsed time and restarts interval after hydration", () => {
+    const { result } = renderHook(() => useTimerStore());
+    act(() => {
+      useTimerStore.setState({
+        status: "running",
+        secondsLeft: 100,
+        lastTickAt: Date.now() - 10_000,
+      });
+      recoverRunningTimerAfterHydration(useTimerStore.getState());
+    });
+    expect(result.current.secondsLeft).toBe(90);
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(result.current.secondsLeft).toBe(89);
+  });
+
+  it("recovers running timer even when lastTickAt is missing", () => {
+    const { result } = renderHook(() => useTimerStore());
+    act(() => {
+      useTimerStore.setState({
+        status: "running",
+        secondsLeft: 60,
+        lastTickAt: null,
+      });
+      recoverRunningTimerAfterHydration(useTimerStore.getState());
+    });
+    expect(result.current.secondsLeft).toBe(60);
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(result.current.secondsLeft).toBe(59);
+  });
+
+  it("triggers skip when timer expired during refresh", async () => {
+    const { result } = renderHook(() => useTimerStore());
+    act(() => {
+      useTimerStore.setState({
+        status: "running",
+        mode: "focus",
+        secondsLeft: 5,
+        lastTickAt: Date.now() - 10_000,
+      });
+      recoverRunningTimerAfterHydration(useTimerStore.getState());
+    });
+    await act(async () => {
+      vi.runAllTimers();
+    });
+    expect(result.current.status).toBe("idle");
+    expect(result.current.mode).toBe("short_break");
   });
 });
 

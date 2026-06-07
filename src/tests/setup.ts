@@ -7,6 +7,15 @@ afterEach(() => {
   cleanup();
 });
 
+// Mock Convex Auth actions used by AuthNav and /auth route
+vi.mock("@convex-dev/auth/react", () => ({
+  useAuthActions: vi.fn().mockReturnValue({
+    signIn: vi.fn(),
+    signOut: vi.fn(),
+  }),
+  ConvexAuthProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
+
 // Mock Convex hooks — tests always run in Dexie (guest) mode.
 // useConvexAuth returns unauthenticated → useDataSource → "dexie".
 vi.mock("convex/react", async () => {

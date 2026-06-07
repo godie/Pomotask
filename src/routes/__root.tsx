@@ -5,6 +5,7 @@ import { useTimerStore } from "@/stores/timerStore";
 import { formatTime } from "@/lib/utils";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { NotFound } from "@/components/ui/NotFound";
+import { AuthNav } from "@/components/auth/AuthNav";
 
 export function RootLayout() {
   const { status, secondsLeft, mode } = useTimerStore();
@@ -44,6 +45,8 @@ export function RootLayout() {
         </div>
 
         <div className="flex items-center gap-6">
+          <AuthNav />
+
           {isInstallable && (
             <button
               onClick={install}
