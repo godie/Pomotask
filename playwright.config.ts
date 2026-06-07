@@ -19,6 +19,7 @@ export default defineConfig({
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
+    serviceWorkers: "block",
   },
   projects: [
     {
@@ -30,6 +31,11 @@ export default defineConfig({
     command: "pnpm dev --port " + String(PORT),
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
-    timeout: 30_000,
+    timeout: 60_000,
+    // Force offline-first E2E: unset Convex URL even when a local .env exists.
+    env: {
+      ...process.env,
+      VITE_CONVEX_URL: "",
+    },
   },
 });

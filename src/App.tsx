@@ -4,6 +4,7 @@ import { routeTree } from "./routeTree.gen";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { MigrationBanner } from "@/components/ui/MigrationBanner";
 import { queryClient } from "@/lib/queryClient";
+import { isConvexConfigured } from "@/lib/convex";
 import { useMigration } from "@/hooks/useMigration";
 
 const router = createRouter({
@@ -24,7 +25,9 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <MigrationBanner status={migration.status} error={migration.error} />
+      {isConvexConfigured && (
+        <MigrationBanner status={migration.status} error={migration.error} />
+      )}
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>

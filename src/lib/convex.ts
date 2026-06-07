@@ -1,10 +1,13 @@
 import { ConvexReactClient } from "convex/react";
 
-const convexUrl = import.meta.env.VITE_CONVEX_URL as string;
+const convexUrl = (import.meta.env.VITE_CONVEX_URL as string | undefined)?.trim();
 
-// Always create a client so useConvexAuth() is safe everywhere.
-// When VITE_CONVEX_URL is unset the client points to a placeholder
-// that never connects — auth always resolves to isAuthenticated: false.
+/** True when a real Convex deployment URL is configured at build time. */
+export const isConvexConfigured = Boolean(convexUrl);
+
+// Always create a client so Convex hooks (useQuery, useConvexAuth) are safe
+// everywhere. Offline builds use a placeholder URL that never connects —
+// auth resolves to { isAuthenticated: false, isLoading: false }.
 export const convex = new ConvexReactClient(
   convexUrl || "https://placeholder.pomotask.local",
 );

@@ -57,6 +57,33 @@ function clearTimerInterval() {
   }
 }
 
+/** Resume a running timer after persist hydration or page refresh. */
+export function recoverRunningTimerAfterHydration(
+  state: Pick<TimerState, "status" | "secondsLeft" | "lastTickAt">,
+) {
+  if (state.status !== "running") return;
+
+  let secondsLeft = state.secondsLeft;
+  if (state.lastTickAt != null) {
+    const elapsed = Math.floor((Date.now() - state.lastTickAt) / 1000);
+    secondsLeft = Math.max(0, state.secondsLeft - elapsed);
+  }
+
+  if (secondsLeft <= 0) {
+    useTimerStore.setState({ secondsLeft: 0, lastTickAt: null });
+    setTimeout(() => {
+      void useTimerStore.getState().skip();
+    }, 0);
+    return;
+  }
+
+  useTimerStore.setState({
+    secondsLeft,
+    lastTickAt: Date.now(),
+  });
+  ensureInterval(() => useTimerStore.getState());
+}
+
 const playBeep = () => {
   try {
     const context = new window.AudioContext();
@@ -103,6 +130,7 @@ export const useTimerStore = create<TimerState>()(
       resume: () => {
         if (get().status !== "paused") return;
         set({ status: "running", lastTickAt: Date.now() });
+        ensureInterval(get);
       },
       tick: () => {
         const { status, secondsLeft } = get();
@@ -178,39 +206,15 @@ export const useTimerStore = create<TimerState>()(
         activeTaskId: state.activeTaskId,
         lastTickAt: state.lastTickAt,
       }),
-      onRehydrateStorage: () => {
-        return (state, error) => {
-          if (error || !state) return;
-
-          if (state.status === "running" && state.lastTickAt) {
-            const elapsed = Math.floor(
-              (Date.now() - state.lastTickAt) / 1000,
-            );
-            const newSecondsLeft = Math.min(
-              state.secondsLeft,
-              Math.max(0, state.secondsLeft - elapsed),
-            );
-
-            if (newSecondsLeft <= 0) {
-              // Pomodoro completed while the page was closed/refreshed
-              useTimerStore.setState({
-                secondsLeft: 0,
-                lastTickAt: null,
-              });
-              // Defer skip so hydration finishes first
-              setTimeout(() => {
-                void useTimerStore.getState().skip();
-              }, 0);
-            } else {
-              useTimerStore.setState({
-                secondsLeft: newSecondsLeft,
-                lastTickAt: Date.now(),
-              });
-              ensureInterval(() => useTimerStore.getState());
-            }
-          }
-        };
-      },
     },
   ),
 );
+
+useTimerStore.persist.onFinishHydration(() => {
+  recoverRunningTimerAfterHydration(useTimerStore.getState());
+});
+
+// Rehydration can finish synchronously before the listener above is registered.
+if (useTimerStore.persist.hasHydrated()) {
+  recoverRunningTimerAfterHydration(useTimerStore.getState());
+}
